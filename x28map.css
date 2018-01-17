@@ -15,6 +15,7 @@ touch-action: none;
     margin: 0;
 	background-color: #f8f8f8;
 }
+a.opt {
 	font-family: sans-serif;
 	text-decoration: none;
 	color: #000000;
