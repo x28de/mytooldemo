@@ -1,0 +1,24 @@
+@charset "ISO-8859-1";
+div#demo { 
+margin-left: 870px; margin-bottom: 300px; height: 510px; width: 400px;
+} 
+canvas { 
+display: block; border: 1px solid #000; float: left; 
+touch-action: none; 
+} 
+.show { // context menu
+    z-index:1000;
+    position: absolute;
+    border: 1px solid black;
+    padding: 2px;
+    display: block;
+    margin: 0;
+	background-color: #f8f8f8;
+}
+.hide {
+    display: none;
+}
+.fill {
+	margin-left: 870px; margin-bottom: 300px; height: 510px; width: 400px;
+	color: #ff0000;
+}
