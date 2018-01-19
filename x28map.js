@@ -37,27 +37,7 @@ function main() {
 		nodes = app.savedNodes;
 	} else {
 		nodes = [
-{x: 40, y: 40, rgb: '#ccdddd', label: 'Lady\'s Onkel', id: '0'},
-{x: 40, y: 90, rgb: '#ccdddd', label: 'Butler', id: '1'},
-{x: 40, y: 140, rgb: '#ccdddd', label: 'Gärtner', id: '2'},
-{x: 40, y: 190, rgb: '#ccdddd', label: 'Köchin', id: '3'},
-{x: 40, y: 240, rgb: '#ccdddd', label: 'Zimmermädchen', id: '4'},
-{x: 40, y: 290, rgb: '#ccdddd', label: 'Chauffeur', id: '5'},
-{x: 40, y: 340, rgb: '#ccdddd', label: 'Klavierspieler', id: '6'},
-{x: 40, y: 390, rgb: '#ccdddd', label: 'Pastor', id: '7'},
-{x: 40, y: 440, rgb: '#ccdddd', label: 'Neffe', id: '8'},
-{x: 40, y: 490, rgb: '#ccdddd', label: 'Stallbursche', id: '9'},
-{x: 190, y: 40, rgb: '#ccdddd', label: 'Gouvernante', id: '10'},
-{x: 190, y: 90, rgb: '#ccdddd', label: 'Hauslehrer', id: '11'},
-{x: 190, y: 140, rgb: '#ccdddd', label: 'Nachbarsjunge', id: '12'},
-{x: 190, y: 190, rgb: '#ccdddd', label: 'Blumenfrau', id: '13'},
-{x: 190, y: 240, rgb: '#ccdddd', label: 'Tante aus Amerika', id: '14'},
-{x: 190, y: 290, rgb: '#ccdddd', label: 'Reitlehrer', id: '15'},
-{x: 190, y: 340, rgb: '#ccdddd', label: 'Schwager', id: '16'},
-{x: 190, y: 390, rgb: '#ccdddd', label: 'Lord', id: '17'},
-{x: 190, y: 440, rgb: '#ccdddd', label: 'Lady', id: '18'},
-{x: 190, y: 490, rgb: '#ccdddd', label: 'Lady\'s Schwester', id: '19'}
-];
+		];
 		app.savedNodes = nodes;
 	}
 				
@@ -82,27 +62,7 @@ function main() {
 	    details = app.savedDetails;
 	} else {
 		details = [
-			{text: 'liegt tot im Fischteich. Wer hat kein Alibi?'},
-			{text: 'war im Kaminzimmer'},
-			{text: 'war im Pferdestall'},
-			{text: 'war im Kaminzimmer'},
-			{text: 'war im Turmzimmer'},
-			{text: 'war im Raucherzimmer'},
-			{text: 'war im Musikzimmer'},
-			{text: 'war im Weinkeller'},
-			{text: 'war im Turmzimmer'},
-			{text: 'war im Gartenhäuschen'},
-			{text: 'war in der Bibliothek'},
-			{text: 'war im Blauen Salon'},
-			{text: 'war im Gartenhäuschen'},
-			{text: 'war im Weinkeller'},
-			{text: 'war im Pferdestall'},
-			{text: 'war im Raucherzimmer'},
-			{text: 'war im Onyx-Bad'},
-			{text: 'war im Musikzimmer'},
-			{text: 'war in der Bibliothek'},
-			{text: 'war im Blauen Salon'}
-];
+		];
 		app.savedDetails = details;
 	}
 				
@@ -132,6 +92,8 @@ function main() {
 				
 	var fillForm = document.getElementById("fillDetails");
 	fillForm.addEventListener('submit',newnode2);
+	
+	document.getElementById("example").addEventListener('click', loadExample);
 
 //
 //	Pointer down/ move/ up
@@ -417,5 +379,61 @@ function main() {
 		app.savedDetails = JSON.parse(app.savedDetails);
 		draw();
 		details = app.savedDetails;
+	}
+	
+	function loadExample() {
+		wipe();
+		nodes = [
+			{x: 40, y: 40, rgb: '#ccdddd', label: 'Lady\'s Onkel', id: '0'},
+			{x: 40, y: 90, rgb: '#ccdddd', label: 'Butler', id: '1'},
+			{x: 40, y: 140, rgb: '#ccdddd', label: 'Gärtner', id: '2'},
+			{x: 40, y: 190, rgb: '#ccdddd', label: 'Köchin', id: '3'},
+			{x: 40, y: 240, rgb: '#ccdddd', label: 'Zimmermädchen', id: '4'},
+			{x: 40, y: 290, rgb: '#ccdddd', label: 'Chauffeur', id: '5'},
+			{x: 40, y: 340, rgb: '#ccdddd', label: 'Klavierspieler', id: '6'},
+			{x: 40, y: 390, rgb: '#ccdddd', label: 'Pastor', id: '7'},
+			{x: 40, y: 440, rgb: '#ccdddd', label: 'Neffe', id: '8'},
+			{x: 40, y: 490, rgb: '#ccdddd', label: 'Stallbursche', id: '9'},
+			{x: 190, y: 40, rgb: '#ccdddd', label: 'Gouvernante', id: '10'},
+			{x: 190, y: 90, rgb: '#ccdddd', label: 'Hauslehrer', id: '11'},
+			{x: 190, y: 140, rgb: '#ccdddd', label: 'Nachbarsjunge', id: '12'},
+			{x: 190, y: 190, rgb: '#ccdddd', label: 'Blumenfrau', id: '13'},
+			{x: 190, y: 240, rgb: '#ccdddd', label: 'Tante aus Amerika', id: '14'},
+			{x: 190, y: 290, rgb: '#ccdddd', label: 'Reitlehrer', id: '15'},
+			{x: 190, y: 340, rgb: '#ccdddd', label: 'Schwager', id: '16'},
+			{x: 190, y: 390, rgb: '#ccdddd', label: 'Lord', id: '17'},
+			{x: 190, y: 440, rgb: '#ccdddd', label: 'Lady', id: '18'},
+			{x: 190, y: 490, rgb: '#ccdddd', label: 'Lady\'s Schwester', id: '19'}
+			];
+		app.savedNodes = nodes;
+		edges = [ 
+			]; 
+		app.savedEdges = edges;
+		app.saveTopology();
+		details = [
+			{text: 'liegt tot im Fischteich. Wer hat kein Alibi?'},
+			{text: 'war im Kaminzimmer'},
+			{text: 'war im Pferdestall'},
+			{text: 'war im Kaminzimmer'},
+			{text: 'war im Turmzimmer'},
+			{text: 'war im Raucherzimmer'},
+			{text: 'war im Musikzimmer'},
+			{text: 'war im Weinkeller'},
+			{text: 'war im Turmzimmer'},
+			{text: 'war im Gartenhäuschen'},
+			{text: 'war in der Bibliothek'},
+			{text: 'war im Blauen Salon'},
+			{text: 'war im Gartenhäuschen'},
+			{text: 'war im Weinkeller'},
+			{text: 'war im Pferdestall'},
+			{text: 'war im Raucherzimmer'},
+			{text: 'war im Onyx-Bad'},
+			{text: 'war im Musikzimmer'},
+			{text: 'war in der Bibliothek'},
+			{text: 'war im Blauen Salon'}
+			];
+		app.savedDetails = details;
+		app.saveTexts();
+		draw();
 	}
 }	
