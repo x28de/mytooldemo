@@ -201,13 +201,27 @@ function main() {
 	}
 				
 	function drop(ev) {
-    	ev.preventDefault();
-		var data = ev.dataTransfer.getData("text");
+		ev.preventDefault();
+		var dt = ev.dataTransfer;
 		x = ev.pageX - translatedX - 6; 
 		y = ev.pageY - translatedY - 8; 
-		newStuff(data);
-		alert("wert: " + data);		
-}
+		if (dt.items[0].kind == "file") {
+			var file = dt.items[0].getAsFile();
+			var reader = new FileReader();
+			reader.onload = readFile(file);
+			reader.readAsText(file);
+		} else {
+			var data = ev.dataTransfer.getData("text");
+			newStuff(data);
+		}
+	}
+	
+	function readFile(file) {
+		return function(e) {
+			var data = e.target.result;
+			newStuff(data);
+		}
+	}
 				
 	can.addEventListener('dragover', allowDrop, false);
 	can.addEventListener('drop', drop, false);
@@ -280,6 +294,7 @@ function main() {
 				
 	can.addEventListener('contextmenu', rightmenu, false);
 	document.getElementById("new").addEventListener('click', newnode);
+	document.getElementById("export").addEventListener('click', exp);
 	document.getElementById("wipe").addEventListener('click', wipe);
 				
     function rightmenu(e) {
@@ -318,6 +333,33 @@ function main() {
 		localStorage.removeItem("savedDetails");
 		location.reload();
 	};
+	
+	function exp(){
+		document.getElementById("rmenu").className = "hide";
+		content ="<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
+				"<!-- This is not for human readers but for http://x28hd.de/tool/ -->" +
+				"<x28map>";
+		for (var i = 0; i < nodes.length; i++) {
+			node = nodes[i];
+//			content += "<topic ID=\"" + node.id + "\" x=\"" + node.x + "\" y=\"" + node.y + "\" color=\"" + node.rgb + "\">" + 
+			id = parseInt(node.id) + 1;		// respecting an old bug
+			content += "<topic id=\"" + id + "\" x=\"" + node.x + "\" y=\"" + node.y + "\" color=\"" + node.rgb + "\">" + 
+					"<label><![CDATA[" + node.label + "]]></label>";
+			content += "<detail><![CDATA[" + details[i].text + "]]></detail></topic>";
+		}
+		for (var i = 0; i < edges.length; i++) {
+			edge = edges[i];
+//			content += "<assoc n1=\"" + edge.n1 + "\" n2=\"" + edge.n2 + "\" color=\"" + edge.rgb + "\">" + 
+			id1 = parseInt(edge.n1) + 1;
+			id2 = parseInt(edge.n2) + 1;
+			content += "<assoc n1=\"" + id1 + "\" n2=\"" + id2 + "\" color=\"" + edge.rgb + "\">" + 
+					"<detail/></assoc>";
+		}
+		content += "</x28map>";
+		uriContent = "data:text/xml," + encodeURIComponent(content);
+		var expAnchor = document.getElementById("export");
+		expAnchor.setAttribute('href', uriContent);
+		expAnchor.setAttribute('download', 'e28export.xml');		}
 
 //
 //	Process the dropped stuff
@@ -325,8 +367,28 @@ function main() {
 	function newStuff(data) {
 		var lines = data.split('\n');
 		id = nodes.length;
+		j = 0;
+		xnew = x;
 		for (var i = 0; i < lines.length; i++) {
+			label = lines[i].trim();
+			var fields = label.split('\t');
+			if (fields.length < 2) {
+				detail = label;
+			} else {
+				label = fields[0];
+				detail = fields[1];
+			}
+			if (!label && !detail) continue; 
+			ynew = y + j * 50;
+			if (j > 9) {
+				j = 0;
+				ynew = y;
+				xnew += 150;
+			}
+			j++;
+			nodes.push({x: xnew, y: ynew, rgb: '#ccdddd', label: label, id: id, 
 				wpid: 'fake' + id});
+			details.push({text: detail});
 			id++;
 		}
 		app.saveTopology();
