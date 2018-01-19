@@ -37,16 +37,26 @@ function main() {
 		nodes = app.savedNodes;
 	} else {
 		nodes = [
-{x: 40, y: 40, rgb: '#ccdddd', label: 'Hello World!', id: '0', wpid: '1'},
-{x: 40, y: 90, rgb: '#ccdddd', label: 'Week 1 of new cMOOC', id: '1', wpid: '3093'},
-{x: 40, y: 140, rgb: '#ccdddd', label: 'Lighthearted Exercise', id: '2', wpid: '3091'},
-{x: 40, y: 190, rgb: '#ccdddd', label: 'Magic of Zettelkasten', id: '3', wpid: '3086'},
-{x: 40, y: 240, rgb: '#ccdddd', label: 'New page: Recognizing', id: '4', wpid: '3077'},
-{x: 40, y: 290, rgb: '#ccdddd', label: 'Sequential requirements', id: '5', wpid: '3041'},
-{x: 40, y: 340, rgb: '#ccdddd', label: 'Tangible Associations', id: '6', wpid: '3032'},
-{x: 40, y: 390, rgb: '#ccdddd', label: 'Im-/Export from/to other think tools', id: '7', wpid: '3029'},
-{x: 40, y: 440, rgb: '#ccdddd', label: 'Unflattening', id: '8', wpid: '3023'},
-{x: 40, y: 490, rgb: '#ccdddd', label: 'Wish list', id: '9', wpid: '3018'}
+{x: 40, y: 40, rgb: '#ccdddd', label: 'Lady\'s Onkel', id: '0'},
+{x: 40, y: 90, rgb: '#ccdddd', label: 'Butler', id: '1'},
+{x: 40, y: 140, rgb: '#ccdddd', label: 'Gärtner', id: '2'},
+{x: 40, y: 190, rgb: '#ccdddd', label: 'Köchin', id: '3'},
+{x: 40, y: 240, rgb: '#ccdddd', label: 'Zimmermädchen', id: '4'},
+{x: 40, y: 290, rgb: '#ccdddd', label: 'Chauffeur', id: '5'},
+{x: 40, y: 340, rgb: '#ccdddd', label: 'Klavierspieler', id: '6'},
+{x: 40, y: 390, rgb: '#ccdddd', label: 'Pastor', id: '7'},
+{x: 40, y: 440, rgb: '#ccdddd', label: 'Neffe', id: '8'},
+{x: 40, y: 490, rgb: '#ccdddd', label: 'Stallbursche', id: '9'},
+{x: 190, y: 40, rgb: '#ccdddd', label: 'Gouvernante', id: '10'},
+{x: 190, y: 90, rgb: '#ccdddd', label: 'Hauslehrer', id: '11'},
+{x: 190, y: 140, rgb: '#ccdddd', label: 'Nachbarsjunge', id: '12'},
+{x: 190, y: 190, rgb: '#ccdddd', label: 'Blumenfrau', id: '13'},
+{x: 190, y: 240, rgb: '#ccdddd', label: 'Tante aus Amerika', id: '14'},
+{x: 190, y: 290, rgb: '#ccdddd', label: 'Reitlehrer', id: '15'},
+{x: 190, y: 340, rgb: '#ccdddd', label: 'Schwager', id: '16'},
+{x: 190, y: 390, rgb: '#ccdddd', label: 'Lord', id: '17'},
+{x: 190, y: 440, rgb: '#ccdddd', label: 'Lady', id: '18'},
+{x: 190, y: 490, rgb: '#ccdddd', label: 'Lady\'s Schwester', id: '19'}
 ];
 		app.savedNodes = nodes;
 	}
@@ -72,16 +82,26 @@ function main() {
 	    details = app.savedDetails;
 	} else {
 		details = [
-{text: 'Welcome to WordPress. This is your first post. Edit or delete it, then start writing!'},
-{text: 'Why do learners need interactivity? Because watching their peers recognizing helps their own recognizing more than consuming canned resources.'},
-{text: '20 interesting goals from a new game can also be used for something entirely different: You can try to find connections between them. E.g., some are similar to others, or impact others in positive or negative ways, seem to include others, or be otherwise related. And thinking about their complex relationships can be too difficult if you only look at a linear list and most of the connections are only in your head. This might be a good opportunity to demonstrate the benefit of a think tool.'},
-{text: 'My tool is now able to import from/ export to tools that are inspired by Luhmann\'s famous Zettelkasten. The magic of this was that he allowed for arbitrary branching at every point in his hierarchical numbering scheme,'},
-{text: 'The new page is a remix of all my blog posts about McGilchrist\'s (@divided_brain) and @Downes\' ideas on recognizing: https://x28newblog.wordpress.com/recognizing-2/'},
-{text: 'Does a neural network need domain knowledge? I think artificial ones do, but human ones do not because they use recognition from the beginning.'},
-{text: 'I understand now better how the \"magic\" of my tool works: it makes associations tangible. It turns elusive mental relationships into \"hands on\" experience, and it compensates for the abstractness of some thought links, with a drawn line \"at our fingertips\".'},
-{text: 'Comparing two other think tools with my own tool one can say that they are rather suited as the big long-term storage \"cupboard\" while my own tool is more like the \"table\" where things are put for a temporary large overview.'},
-{text: 'The gem of Sousanis\' book \"Unflattening\" was that it does a great job explaining why the right hemisphere mode (\"all-at-once\") lives from relations: Basically, it argues that the eye is \"dancing and darting\", i.e. by its saccadic motion (palpation by means of the gaze) it captures only small fragments at a time, and it is our imagination that needs to combine them into vision.'},
-{text: 'There was the question of what @downes and @gsiemens can do working together, and I don\'t want to miss this opportunity for an early Christmas wish list :-)  I there is much to be done in the field of machine-supported human recognition.'}
+			{text: 'liegt tot im Fischteich. Wer hat kein Alibi?'},
+			{text: 'war im Kaminzimmer'},
+			{text: 'war im Pferdestall'},
+			{text: 'war im Kaminzimmer'},
+			{text: 'war im Turmzimmer'},
+			{text: 'war im Raucherzimmer'},
+			{text: 'war im Musikzimmer'},
+			{text: 'war im Weinkeller'},
+			{text: 'war im Turmzimmer'},
+			{text: 'war im Gartenhäuschen'},
+			{text: 'war in der Bibliothek'},
+			{text: 'war im Blauen Salon'},
+			{text: 'war im Gartenhäuschen'},
+			{text: 'war im Weinkeller'},
+			{text: 'war im Pferdestall'},
+			{text: 'war im Raucherzimmer'},
+			{text: 'war im Onyx-Bad'},
+			{text: 'war im Musikzimmer'},
+			{text: 'war in der Bibliothek'},
+			{text: 'war im Blauen Salon'}
 ];
 		app.savedDetails = details;
 	}
@@ -312,7 +332,7 @@ function main() {
 	function newnode2() {
 		id = nodes.length;
 		var newLabel = document.forms[0].elements[0].value;
-		nodes.push({x: x, y: y, rgb: '#ffbbbb', label: newLabel, id: id, wpid: 'fake' + id});
+		nodes.push({x: x, y: y, rgb: '#ffbbbb', label: newLabel, id: id});
 		app.saveTopology();
 
 		var newDetail = document.forms[0].elements[1].value;
@@ -386,8 +406,7 @@ function main() {
 				xnew += 150;
 			}
 			j++;
-			nodes.push({x: xnew, y: ynew, rgb: '#ccdddd', label: label, id: id, 
-				wpid: 'fake' + id});
+			nodes.push({x: xnew, y: ynew, rgb: '#ccdddd', label: label, id: id});
 			details.push({text: detail});
 			id++;
 		}
