@@ -12,7 +12,8 @@ Your browser does not support the HTML5 canvas tag.
 </canvas>
 <div class="hide" id="rmenu">
 	<a id = "new" class='opt' href='#'>Add new item here</a><br />
-	<a id = "export" class='opt' style="color: LightGray;" href='#'>Export</a><br />
+	<a id = "export" class='opt' href='x28export.xml' download=''>Export</a><br />
+<!-- 	<a id = "export" class='opt' >Export</a><br /> -->
 	<a id = "wipe" class='opt' href='#'>Wipe clean</a>
 </div>
 <div id="demo"><em>Click an icon for its details.  
@@ -20,7 +21,7 @@ Your browser does not support the HTML5 canvas tag.
 </div>
 <div id="fillDetails" class="hide">
 		<form action="#" method="post">
-		<input type="text" name="label" />
+		<input type="text" name="label" autocomplete="off"/>
 		<br />
 		<textarea name="detail" ></textarea>
 		<br />

@@ -326,11 +326,7 @@ function main() {
 		var lines = data.split('\n');
 		id = nodes.length;
 		for (var i = 0; i < lines.length; i++) {
-			yps = y + i * 50;
-			var fields = lines[i].split('\t');
-			nodes.push({x: x, y: yps, rgb: '#bbffbb', label: fields[0], id: id, 
 				wpid: 'fake' + id});
-			details.push({text: fields[1]});
 			id++;
 		}
 		app.saveTopology();
