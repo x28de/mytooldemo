@@ -93,6 +93,9 @@ function main() {
 	var fillForm = document.getElementById("fillDetails");
 	fillForm.addEventListener('submit',newnode2);
 	
+	var colors = ["#d2bbd2", "#bbbbff", "#bbffbb", "#ffff99", 
+		"#ffe8aa", "#ffbbbb", "#eeeeee", "#ccdddd"];
+		
 	document.getElementById("example").addEventListener('click', loadExample);
 
 //
@@ -109,6 +112,7 @@ function main() {
 		if (selectedNode == -1) {
 			document.getElementById("demo").innerHTML = initText;
 			document.getElementById("rmenu").className = "hide";
+			document.getElementById("rmenu2").className = "hide";
 		}
 		mousedown = true;
 		draw(evt);
@@ -278,12 +282,25 @@ function main() {
 	document.getElementById("new").addEventListener('click', newnode);
 	document.getElementById("export").addEventListener('click', exp);
 	document.getElementById("wipe").addEventListener('click', wipe);
+	for (var i = 0; i < 8; i++) {
+		var el = "color" + i;
+		document.getElementById(el).addEventListener('click', recolor);
+	}
 				
     function rightmenu(e) {
 		e.preventDefault();
+		if (selectedNode == -1) {
 		document.getElementById("rmenu").className = "show";  
 		document.getElementById("rmenu").style.top =  e.y + 'px';
 		document.getElementById("rmenu").style.left = e.x + 'px';
+		} else {
+			document.getElementById("rmenu2").className = "show";  
+			document.getElementById("rmenu2").style.top =  e.y + 'px';
+			document.getElementById("rmenu2").style.left = e.x + 'px';
+			for (var i = 0; i < 8; i++) {
+				document.getElementById("color" + i).style.background = colors[i];
+			}
+		}
 	}
     		
 	function newnode() {
@@ -435,5 +452,12 @@ function main() {
 		app.savedDetails = details;
 		app.saveTexts();
 		draw();
+	}
+	
+	function recolor(e) {
+        var targetElement = e.target || e.srcElement;
+        colorID = targetElement.id.substring(5, 6);
+		nodes[selectedNode].rgb = colors[colorID];
+		document.getElementById("rmenu2").className = "hide";
 	}
 }	
