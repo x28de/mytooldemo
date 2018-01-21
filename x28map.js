@@ -97,6 +97,7 @@ function main() {
 		"#ffe8aa", "#ffbbbb", "#eeeeee", "#ccdddd"];
 		
 	document.getElementById("example").addEventListener('click', loadExample);
+	document.getElementById("help").addEventListener('click', loadExample);
 
 //
 //	Pointer down/ move/ up
@@ -113,6 +114,8 @@ function main() {
 			document.getElementById("demo").innerHTML = initText;
 			document.getElementById("rmenu").className = "hide";
 			document.getElementById("rmenu2").className = "hide";
+			document.getElementById("example").addEventListener('click', loadExample);
+			document.getElementById("help").addEventListener('click', loadExample);
 		}
 		mousedown = true;
 		draw(evt);
@@ -330,7 +333,7 @@ function main() {
 		localStorage.removeItem("savedNodes");
 		localStorage.removeItem("savedEdges");
 		localStorage.removeItem("savedDetails");
-		location.reload();
+		location.reload();	
 	};
 	
 	function exp(){
@@ -398,29 +401,37 @@ function main() {
 		details = app.savedDetails;
 	}
 	
-	function loadExample() {
+	function loadExample(e) {
+		if (app.savedNodes.length > 0) {
+			if (!confirm("This will wipe clean your map. \n" +
+					"(You may want to export it first,\n" +
+					"via right-click on the canvas.)")) {
+				return;}
+		}
 		wipe();
-		nodes = [
+        var targetElement = e.target || e.srcElement;
+        if (targetElement.id == "example") {
+        nodes = [	// placeholder for an English version
 			{x: 40, y: 40, rgb: '#ccdddd', label: 'Lady\'s Onkel', id: '0'},
-			{x: 40, y: 90, rgb: '#ccdddd', label: 'Butler', id: '1'},
-			{x: 40, y: 140, rgb: '#ccdddd', label: 'Gärtner', id: '2'},
-			{x: 40, y: 190, rgb: '#ccdddd', label: 'Köchin', id: '3'},
-			{x: 40, y: 240, rgb: '#ccdddd', label: 'Zimmermädchen', id: '4'},
-			{x: 40, y: 290, rgb: '#ccdddd', label: 'Chauffeur', id: '5'},
-			{x: 40, y: 340, rgb: '#ccdddd', label: 'Klavierspieler', id: '6'},
-			{x: 40, y: 390, rgb: '#ccdddd', label: 'Pastor', id: '7'},
-			{x: 40, y: 440, rgb: '#ccdddd', label: 'Neffe', id: '8'},
-			{x: 40, y: 490, rgb: '#ccdddd', label: 'Stallbursche', id: '9'},
-			{x: 190, y: 40, rgb: '#ccdddd', label: 'Gouvernante', id: '10'},
-			{x: 190, y: 90, rgb: '#ccdddd', label: 'Hauslehrer', id: '11'},
-			{x: 190, y: 140, rgb: '#ccdddd', label: 'Nachbarsjunge', id: '12'},
-			{x: 190, y: 190, rgb: '#ccdddd', label: 'Blumenfrau', id: '13'},
-			{x: 190, y: 240, rgb: '#ccdddd', label: 'Tante aus Amerika', id: '14'},
-			{x: 190, y: 290, rgb: '#ccdddd', label: 'Reitlehrer', id: '15'},
-			{x: 190, y: 340, rgb: '#ccdddd', label: 'Schwager', id: '16'},
-			{x: 190, y: 390, rgb: '#ccdddd', label: 'Lord', id: '17'},
-			{x: 190, y: 440, rgb: '#ccdddd', label: 'Lady', id: '18'},
-			{x: 190, y: 490, rgb: '#ccdddd', label: 'Lady\'s Schwester', id: '19'}
+			{x: 40, y: 90, rgb: '#bbbbff', label: 'Butler', id: '1'},
+			{x: 40, y: 140, rgb: '#bbbbff', label: 'Gärtner', id: '2'},
+			{x: 40, y: 190, rgb: '#ffbbbb', label: 'Köchin', id: '3'},
+			{x: 40, y: 240, rgb: '#ffbbbb', label: 'Zimmermädchen', id: '4'},
+			{x: 40, y: 290, rgb: '#bbbbff', label: 'Chauffeur', id: '5'},
+			{x: 40, y: 340, rgb: '#bbbbff', label: 'Klavierspieler', id: '6'},
+			{x: 40, y: 390, rgb: '#bbbbff', label: 'Pastor', id: '7'},
+			{x: 40, y: 440, rgb: '#bbbbff', label: 'Neffe', id: '8'},
+			{x: 40, y: 490, rgb: '#bbbbff', label: 'Stallbursche', id: '9'},
+			{x: 190, y: 40, rgb: '#ffbbbb', label: 'Gouvernante', id: '10'},
+			{x: 190, y: 90, rgb: '#bbbbff', label: 'Hauslehrer', id: '11'},
+			{x: 190, y: 140, rgb: '#bbbbff', label: 'Nachbarsjunge', id: '12'},
+			{x: 190, y: 190, rgb: '#ffbbbb', label: 'Blumenfrau', id: '13'},
+			{x: 190, y: 240, rgb: '#ffbbbb', label: 'Tante aus Amerika', id: '14'},
+			{x: 190, y: 290, rgb: '#bbbbff', label: 'Reitlehrer', id: '15'},
+			{x: 190, y: 340, rgb: '#bbbbff', label: 'Schwager', id: '16'},
+			{x: 190, y: 390, rgb: '#bbbbff', label: 'Lord', id: '17'},
+			{x: 190, y: 440, rgb: '#ffbbbb', label: 'Lady', id: '18'},
+			{x: 190, y: 490, rgb: '#ffbbbb', label: 'Lady\'s Schwester', id: '19'}
 			];
 		app.savedNodes = nodes;
 		edges = [ 
@@ -452,6 +463,76 @@ function main() {
 		app.savedDetails = details;
 		app.saveTexts();
 		draw();
+        } else {
+            nodes = [
+    			{x: 40, y: 40, rgb: '#ccdddd', label: 'Click this and look right', id: '0'},
+    			{x: 40, y: 90, rgb: '#ccdddd', label: 'Move', id: '1'},
+    			{x: 40, y: 140, rgb: '#ccdddd', label: 'Connect', id: '2'},
+    			{x: 40, y: 190, rgb: '#ccdddd', label: 'Pan', id: '3'},
+    			{x: 40, y: 240, rgb: '#ccdddd', label: 'Drop input', id: '4'},
+    			{x: 40, y: 290, rgb: '#ccdddd', label: 'Drop a file', id: '5'},
+    			{x: 40, y: 340, rgb: '#ccdddd', label: 'Add single items', id: '6'},
+    			{x: 40, y: 390, rgb: '#ccdddd', label: 'Wipe', id: '7'},
+    			{x: 40, y: 440, rgb: '#ccdddd', label: 'Export', id: '8'},
+    			{x: 40, y: 490, rgb: '#ccdddd', label: 'Re-color', id: '9'},
+    			{x: 190, y: 90, rgb: '#ccdddd', label: 'Drag', id: '10'},
+    			{x: 190, y: 140, rgb: '#ccdddd', label: 'ALT + drag', id: '11'},
+    			];
+    		app.savedNodes = nodes;
+    		edges = [ 
+    			]; 
+    		app.savedEdges = edges;
+    		app.saveTopology();
+    		details = [
+    			{text: 'Click an item on the left pane to view its details on the right pane.' +
+    				'<br />(Apparently, you\'ve done that right. Congratulations!)' +
+    				'<br /><br />It is a bit like turning cards face up in the ' +
+    				'game of Pairs / Concentration / Memory -- ' +
+    				'just that it won\'t cost you scores. \'Turn\' as often as you need.'},
+    			{text: 'To move an icon, drag it, i.e., press and hold the left mouse-button, ' +
+    				'move the mouse-pointer, and release the mouse-button.' +
+    				'<br /><br />Do that to move similar items close to each other.'},
+    			{text: 'To connect one item to a second item, you will ALT + drag it, i.e. ' +
+    				'<br />- press and hold the ALT key, ' +
+    				'<br />- then drag the mouse until you reach the second item,' +
+    				'<br />- then release both the mouse-button and the ALT key.' +
+    				'<br /><br />Exercise: Connect the \'ALT + drag\' icon to some related icon.'},
+    			{text: 'To pan the canvas, drag its background.'},
+    			{text: 'The easiest way to get input into the map is ' +
+    				'<br />- to select some text in another browser window' +
+    				'<br />- and just drag and drop it onto the canvas.' +
+    				'<br /><br />If you don\'t believe it, just try it. ' +
+    				'Don\'t be confused by the unusual shapes of the mouse pointer -- ' +
+    				'once the mouse is over the canvas, it will change.' +
+    				'<br /><br />Exercise: Select the two items below and drag them to the canvas: <br />' +
+    				'<br />Item 1\tdetails 1' +
+    				'<br />Item 2\tdetails 2' +
+    				'<br /><br />Now try text from a different window.'},
+    			{text: 'You may drop a simple text file onto the canvas. Each line becomes an item.' +
+    					'You may separate the \'detail\' part from the \'label\' by a TAB character.'},
+    			{text: 'Right-click the canvas and select \'Add a new item here\', ' +
+    					'then fill in the \'Label\' and/ or \'Details\' fields.' +
+    					'<br />In the (limited) demo version, press \'Done\' after editing.' +
+    					'<br /><br />Single icons are useful if you want to create \'towns\' ' +
+    					'amidst the \'villages\' on your logical map. ' +
+    					'But unlike categories, they don\'t even need a name!'},
+    			{text: 'Right-click the canvas and select \'Wipe clean\'.' +
+    					'<br />This map is like a blackboard in a classroom: ' +
+    					'When you re-open your browser tomorrow, you will still ' +
+    					'see the drawings that you left here today. (They live in the browser\'s cache database.)' +
+    					'<br />For new maps, wipe them. Perhaps export them first.'},
+    			{text: 'Right-click the canvas and select \'Export\' to get an .xml file ' + 
+    					'that can be opened in the full Condensr version (free download here:' +
+    					'<a href="http://condensr.de">condensr.de</a>).'},
+    			{text: 'Right-click an icon, and select a new color.'},
+    			{text: 'Drag an icon to move it. Drag the canvas background to pan.'},
+    			{text: 'ALT + drag an icon to connect it.'},
+    			];
+    		app.savedDetails = details;
+    		app.saveTexts();
+    		draw();
+        	
+        }
 	}
 	
 	function recolor(e) {
