@@ -96,8 +96,8 @@ function main() {
 	var colors = ["#d2bbd2", "#bbbbff", "#bbffbb", "#ffff99", 
 		"#ffe8aa", "#ffbbbb", "#eeeeee", "#ccdddd"];
 		
-	document.getElementById("example").addEventListener('click', loadExample);
-	document.getElementById("help").addEventListener('click', loadExample);
+	document.getElementById("help").addEventListener('click', loadHelp);
+	document.getElementById("example").addEventListener('click', loadHelp);
 
 //
 //	Pointer down/ move/ up
@@ -114,8 +114,8 @@ function main() {
 			document.getElementById("demo").innerHTML = initText;
 			document.getElementById("rmenu").className = "hide";
 			document.getElementById("rmenu2").className = "hide";
-			document.getElementById("example").addEventListener('click', loadExample);
-			document.getElementById("help").addEventListener('click', loadExample);
+			document.getElementById("help").addEventListener('click', loadHelp);
+			document.getElementById("example").addEventListener('click', loadHelp);
 		}
 		mousedown = true;
 		draw(evt);
@@ -361,7 +361,7 @@ function main() {
 		uriContent = "data:text/xml," + encodeURIComponent(content);
 		var expAnchor = document.getElementById("export");
 		expAnchor.setAttribute('href', uriContent);
-		expAnchor.setAttribute('download', 'e28export.xml');		}
+		expAnchor.setAttribute('download', 'x28export.xml');		}
 
 //
 //	Process the dropped stuff
@@ -372,10 +372,11 @@ function main() {
 		j = 0;
 		xnew = x;
 		for (var i = 0; i < lines.length; i++) {
-			label = lines[i].trim();
-			var fields = label.split('\t');
+			line = lines[i].trim();
+			var fields = line.split('\t');
 			if (fields.length < 2) {
-				detail = label;
+				detail = line;
+				label = line.substring(0, 30);
 			} else {
 				label = fields[0];
 				detail = fields[1];
@@ -401,7 +402,7 @@ function main() {
 		details = app.savedDetails;
 	}
 	
-	function loadExample(e) {
+	function loadHelp(e) {
 		if (app.savedNodes.length > 0) {
 			if (!confirm("This will wipe clean your map. \n" +
 					"(You may want to export it first,\n" +
@@ -410,73 +411,20 @@ function main() {
 		}
 		wipe();
         var targetElement = e.target || e.srcElement;
-        if (targetElement.id == "example") {
-        nodes = [	// placeholder for an English version
-			{x: 40, y: 40, rgb: '#ccdddd', label: 'Lady\'s Onkel', id: '0'},
-			{x: 40, y: 90, rgb: '#bbbbff', label: 'Butler', id: '1'},
-			{x: 40, y: 140, rgb: '#bbbbff', label: 'Gärtner', id: '2'},
-			{x: 40, y: 190, rgb: '#ffbbbb', label: 'Köchin', id: '3'},
-			{x: 40, y: 240, rgb: '#ffbbbb', label: 'Zimmermädchen', id: '4'},
-			{x: 40, y: 290, rgb: '#bbbbff', label: 'Chauffeur', id: '5'},
-			{x: 40, y: 340, rgb: '#bbbbff', label: 'Klavierspieler', id: '6'},
-			{x: 40, y: 390, rgb: '#bbbbff', label: 'Pastor', id: '7'},
-			{x: 40, y: 440, rgb: '#bbbbff', label: 'Neffe', id: '8'},
-			{x: 40, y: 490, rgb: '#bbbbff', label: 'Stallbursche', id: '9'},
-			{x: 190, y: 40, rgb: '#ffbbbb', label: 'Gouvernante', id: '10'},
-			{x: 190, y: 90, rgb: '#bbbbff', label: 'Hauslehrer', id: '11'},
-			{x: 190, y: 140, rgb: '#bbbbff', label: 'Nachbarsjunge', id: '12'},
-			{x: 190, y: 190, rgb: '#ffbbbb', label: 'Blumenfrau', id: '13'},
-			{x: 190, y: 240, rgb: '#ffbbbb', label: 'Tante aus Amerika', id: '14'},
-			{x: 190, y: 290, rgb: '#bbbbff', label: 'Reitlehrer', id: '15'},
-			{x: 190, y: 340, rgb: '#bbbbff', label: 'Schwager', id: '16'},
-			{x: 190, y: 390, rgb: '#bbbbff', label: 'Lord', id: '17'},
-			{x: 190, y: 440, rgb: '#ffbbbb', label: 'Lady', id: '18'},
-			{x: 190, y: 490, rgb: '#ffbbbb', label: 'Lady\'s Schwester', id: '19'}
-			];
-		app.savedNodes = nodes;
-		edges = [ 
-			]; 
-		app.savedEdges = edges;
-		app.saveTopology();
-		details = [
-			{text: 'liegt tot im Fischteich. Wer hat kein Alibi?'},
-			{text: 'war im Kaminzimmer'},
-			{text: 'war im Pferdestall'},
-			{text: 'war im Kaminzimmer'},
-			{text: 'war im Turmzimmer'},
-			{text: 'war im Raucherzimmer'},
-			{text: 'war im Musikzimmer'},
-			{text: 'war im Weinkeller'},
-			{text: 'war im Turmzimmer'},
-			{text: 'war im Gartenhäuschen'},
-			{text: 'war in der Bibliothek'},
-			{text: 'war im Blauen Salon'},
-			{text: 'war im Gartenhäuschen'},
-			{text: 'war im Weinkeller'},
-			{text: 'war im Pferdestall'},
-			{text: 'war im Raucherzimmer'},
-			{text: 'war im Onyx-Bad'},
-			{text: 'war im Musikzimmer'},
-			{text: 'war in der Bibliothek'},
-			{text: 'war im Blauen Salon'}
-			];
-		app.savedDetails = details;
-		app.saveTexts();
-		draw();
-        } else {
+        if (targetElement.id == "help") {
             nodes = [
-    			{x: 40, y: 40, rgb: '#ccdddd', label: 'Click this and look right', id: '0'},
-    			{x: 40, y: 90, rgb: '#ccdddd', label: 'Move', id: '1'},
-    			{x: 40, y: 140, rgb: '#ccdddd', label: 'Connect', id: '2'},
-    			{x: 40, y: 190, rgb: '#ccdddd', label: 'Pan', id: '3'},
-    			{x: 40, y: 240, rgb: '#ccdddd', label: 'Drop input', id: '4'},
-    			{x: 40, y: 290, rgb: '#ccdddd', label: 'Drop a file', id: '5'},
-    			{x: 40, y: 340, rgb: '#ccdddd', label: 'Add single items', id: '6'},
-    			{x: 40, y: 390, rgb: '#ccdddd', label: 'Wipe', id: '7'},
-    			{x: 40, y: 440, rgb: '#ccdddd', label: 'Export', id: '8'},
-    			{x: 40, y: 490, rgb: '#ccdddd', label: 'Re-color', id: '9'},
-    			{x: 190, y: 90, rgb: '#ccdddd', label: 'Drag', id: '10'},
-    			{x: 190, y: 140, rgb: '#ccdddd', label: 'ALT + drag', id: '11'},
+    			{x: 40, y: 40, rgb: '#ffbbbb', label: 'Click this and look right', id: '0'},
+    			{x: 40, y: 90, rgb: '#d2bbd2', label: 'Move', id: '1'},
+    			{x: 40, y: 140, rgb: '#d2bbd2', label: 'Connect', id: '2'},
+    			{x: 40, y: 190, rgb: '#d2bbd2', label: 'Pan', id: '3'},
+    			{x: 40, y: 240, rgb: '#bbbbff', label: 'Drop input', id: '4'},
+    			{x: 40, y: 290, rgb: '#bbbbff', label: 'Drop a file', id: '5'},
+    			{x: 40, y: 340, rgb: '#bbbbff', label: 'Add single items', id: '6'},
+    			{x: 40, y: 390, rgb: '#bbffbb', label: 'Wipe', id: '7'},
+    			{x: 40, y: 440, rgb: '#bbffbb', label: 'Export', id: '8'},
+    			{x: 40, y: 490, rgb: '#ffff99', label: 'Re-color', id: '9'},
+    			{x: 190, y: 90, rgb: '#d2bbd2', label: 'Drag', id: '10'},
+    			{x: 190, y: 140, rgb: '#d2bbd2', label: 'ALT + drag', id: '11'},
     			];
     		app.savedNodes = nodes;
     		edges = [ 
@@ -485,28 +433,29 @@ function main() {
     		app.saveTopology();
     		details = [
     			{text: 'Click an item on the left pane to view its details on the right pane.' +
-    				'<br />(Apparently, you\'ve done that right. Congratulations!)' +
     				'<br /><br />It is a bit like turning cards face up in the ' +
-    				'game of Pairs / Concentration / Memory -- ' +
+    				'game of Pairs (aka Memory or Concentration) -- ' +
     				'just that it won\'t cost you scores. \'Turn\' as often as you need.'},
     			{text: 'To move an icon, drag it, i.e., press and hold the left mouse-button, ' +
     				'move the mouse-pointer, and release the mouse-button.' +
     				'<br /><br />Do that to move similar items close to each other.'},
-    			{text: 'To connect one item to a second item, you will ALT + drag it, i.e. ' +
+    			{text: 'To connect one icon to a second icon, you will ALT + drag it, i.e. ' +
+    				'<br />- point at the first icon, ' +
     				'<br />- press and hold the ALT key, ' +
-    				'<br />- then drag the mouse until you reach the second item,' +
+    				'<br />- then drag the mouse until you reach the second icon,' +
     				'<br />- then release both the mouse-button and the ALT key.' +
     				'<br /><br />Exercise: Connect the \'ALT + drag\' icon to some related icon.'},
-    			{text: 'To pan the canvas, drag its background.'},
-    			{text: 'The easiest way to get input into the map is ' +
+    			{text: 'To pan the canvas, drag its background.' +
+    				'<br /><br />Try it! Does it work?'},
+    			{text: 'The easiest way to get your input into the map is ' +
     				'<br />- to select some text in another browser window' +
     				'<br />- and just drag and drop it onto the canvas.' +
     				'<br /><br />If you don\'t believe it, just try it. ' +
-    				'Don\'t be confused by the unusual shapes of the mouse pointer -- ' +
+    				'Don\'t be confused by the unexpected shapes of the mouse pointer -- ' +
     				'once the mouse is over the canvas, it will change.' +
     				'<br /><br />Exercise: Select the two items below and drag them to the canvas: <br />' +
-    				'<br />Item 1\tdetails 1' +
-    				'<br />Item 2\tdetails 2' +
+    				'<br />Item 1\tdemo' +
+    				'<br />Item 2\tdemo' +
     				'<br /><br />Now try text from a different window.'},
     			{text: 'You may drop a simple text file onto the canvas. Each line becomes an item.' +
     					'You may separate the \'detail\' part from the \'label\' by a TAB character.'},
@@ -514,13 +463,14 @@ function main() {
     					'then fill in the \'Label\' and/ or \'Details\' fields.' +
     					'<br />In the (limited) demo version, press \'Done\' after editing.' +
     					'<br /><br />Single icons are useful if you want to create \'towns\' ' +
-    					'amidst the \'villages\' on your logical map. ' +
+    					'amidst the \'villages\' on your thought map. ' +
     					'But unlike categories, they don\'t even need a name!'},
     			{text: 'Right-click the canvas and select \'Wipe clean\'.' +
-    					'<br />This map is like a blackboard in a classroom: ' +
+    					'<br /><br />This limited map is like a blackboard in a classroom: ' +
     					'When you re-open your browser tomorrow, you will still ' +
     					'see the drawings that you left here today. (They live in the browser\'s cache database.)' +
-    					'<br />For new maps, wipe them. Perhaps export them first.'},
+    					'<br />For new maps, wipe clean. Perhaps export them first.' +
+    					'<br /><br />(The full version supports filing as you would expect it.)'},
     			{text: 'Right-click the canvas and select \'Export\' to get an .xml file ' + 
     					'that can be opened in the full Condensr version (free download here:' +
     					'<a href="http://condensr.de">condensr.de</a>).'},
@@ -531,7 +481,59 @@ function main() {
     		app.savedDetails = details;
     		app.saveTexts();
     		draw();
-        	
+        } else {
+        	nodes = [	// placeholder for amore professional story
+        		{x: 40, y: 40, rgb: '#ccdddd', label: 'Lady\'s Uncle', id: '0'},
+        		{x: 40, y: 90, rgb: '#bbbbff', label: 'Butler', id: '1'},
+        		{x: 40, y: 140, rgb: '#bbbbff', label: 'Gardener', id: '2'},
+        		{x: 40, y: 190, rgb: '#ffbbbb', label: 'Cook', id: '3'},
+        		{x: 40, y: 240, rgb: '#ffbbbb', label: 'Nephew', id: '4'},
+        		{x: 40, y: 290, rgb: '#bbbbff', label: 'Coachman', id: '5'},
+        		{x: 40, y: 340, rgb: '#bbbbff', label: 'Pianist', id: '6'},
+        		{x: 40, y: 390, rgb: '#bbbbff', label: 'Pastor', id: '7'},
+        		{x: 40, y: 440, rgb: '#bbbbff', label: 'Chambermaid', id: '8'},
+        		{x: 40, y: 490, rgb: '#bbbbff', label: 'Stable-lad', id: '9'},
+        		{x: 190, y: 40, rgb: '#ffbbbb', label: 'Flower girl', id: '10'},
+        		{x: 190, y: 90, rgb: '#bbbbff', label: 'Tutor', id: '11'},
+        		{x: 190, y: 140, rgb: '#bbbbff', label: 'Neighbour boy', id: '12'},
+        		{x: 190, y: 190, rgb: '#ffbbbb', label: 'Governess', id: '13'},
+        		{x: 190, y: 240, rgb: '#ffbbbb', label: 'Aunt from America', id: '14'},
+        		{x: 190, y: 290, rgb: '#bbbbff', label: 'Riding instructor', id: '15'},
+        		{x: 190, y: 340, rgb: '#bbbbff', label: 'Brother in law', id: '16'},
+        		{x: 190, y: 390, rgb: '#bbbbff', label: 'Lord', id: '17'},
+        		{x: 190, y: 440, rgb: '#ffbbbb', label: 'Lady', id: '18'},
+        		{x: 190, y: 490, rgb: '#ffbbbb', label: 'Lady\'s Sister', id: '19'}
+        		];
+        	app.savedNodes = nodes;
+        	edges = [ 
+        		]; 
+        	app.savedEdges = edges;
+        	app.saveTopology();
+        	details = [
+        		{text: 'lies dead in the fishpond. Who does not have an alibi?'},
+        		{text: 'was in the fireside lounge'},
+        		{text: 'was in the horse stable'},
+        		{text: 'was in the fireside lounge'},
+        		{text: 'was in the tower chamber'},
+        		{text: 'was in the smoking room'},
+        		{text: 'was in the music room'},
+        		{text: 'was in the wine cellar'},
+        		{text: 'was in the tower chamber'},
+        		{text: 'was in the garden shed'},
+        		{text: 'was in der Library'},
+        		{text: 'was in the Blue Parlour'},
+        		{text: 'was in the garden shed'},
+        		{text: 'was in the wine cellar'},
+        		{text: 'was in the horse stable'},
+        		{text: 'was in the smoking room'},
+        		{text: 'was in the Onyx bathroom'},
+        		{text: 'was in the music room'},
+        		{text: 'was in der Library'},
+        		{text: 'was in the Blue Parlour'}
+        		];
+        	app.savedDetails = details;
+        	app.saveTexts();
+        	draw();
         }
 	}
 	

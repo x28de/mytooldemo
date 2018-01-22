@@ -1,6 +1,6 @@
 @charset "ISO-8859-1";
 div#demo { 
-margin-left: 870px; margin-bottom: 300px; height: 576px; width: 300px;
+margin-left: 765px; margin-bottom: 300px; height: 576px; width: 250px;
 border: 1px solid; padding: 3px;
 } 
 canvas { 
@@ -25,11 +25,11 @@ a.opt {
     display: none;
 }
 .fill {
-	margin-left: 870px; margin-bottom: 300px; height: 576px; width: 300px;
+	margin-left: 765px; margin-bottom: 300px; height: 576px; width: 250px;
 	border: 1px solid; padding: 3px;
 }
 textarea {
-	width: 295px;
+	width: 245px;
 	height: 200px;
 }
 input {
