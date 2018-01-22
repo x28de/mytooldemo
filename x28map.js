@@ -192,10 +192,11 @@ function main() {
 	function drop(ev) {
 		ev.preventDefault();
 		var dt = ev.dataTransfer;
+		var files = dt.files;
 		x = ev.pageX - translatedX - 6; 
 		y = ev.pageY - translatedY - 8; 
-		if (dt.items[0].kind == "file") {
-			var file = dt.items[0].getAsFile();
+		if (files.length > 0) {
+			var file = files[0];
 			var reader = new FileReader();
 			reader.onload = readFile(file);
 			reader.readAsText(file);
@@ -448,16 +449,16 @@ function main() {
     			{text: 'To pan the canvas, drag its background.' +
     				'<br /><br />Try it! Does it work?'},
     			{text: 'The easiest way to get your input into the map is ' +
-    				'<br />- to select some text in another browser window' +
+    				'<br />- to select some text in another window' +
     				'<br />- and just drag and drop it onto the canvas.' +
-    				'<br /><br />If you don\'t believe it, just try it. ' +
+    				'<br /><br />Just try it (except on Safari & IE). ' +
     				'Don\'t be confused by the unexpected shapes of the mouse pointer -- ' +
     				'once the mouse is over the canvas, it will change.' +
     				'<br /><br />Exercise: Select the two items below and drag them to the canvas: <br />' +
     				'<br />Item 1\tdemo' +
     				'<br />Item 2\tdemo' +
     				'<br /><br />Now try text from a different window.'},
-    			{text: 'You may drop a simple text file onto the canvas. Each line becomes an item.' +
+    			{text: 'You may drop a simple text file onto the canvas (except on Safai). Each line becomes an item.' +
     					'You may separate the \'detail\' part from the \'label\' by a TAB character.'},
     			{text: 'Right-click the canvas and select \'Add a new item here\', ' +
     					'then fill in the \'Label\' and/ or \'Details\' fields.' +
@@ -487,11 +488,11 @@ function main() {
         		{x: 40, y: 90, rgb: '#bbbbff', label: 'Butler', id: '1'},
         		{x: 40, y: 140, rgb: '#bbbbff', label: 'Gardener', id: '2'},
         		{x: 40, y: 190, rgb: '#ffbbbb', label: 'Cook', id: '3'},
-        		{x: 40, y: 240, rgb: '#ffbbbb', label: 'Nephew', id: '4'},
+        		{x: 40, y: 240, rgb: '#bbbbff', label: 'Nephew', id: '4'},
         		{x: 40, y: 290, rgb: '#bbbbff', label: 'Coachman', id: '5'},
         		{x: 40, y: 340, rgb: '#bbbbff', label: 'Pianist', id: '6'},
         		{x: 40, y: 390, rgb: '#bbbbff', label: 'Pastor', id: '7'},
-        		{x: 40, y: 440, rgb: '#bbbbff', label: 'Chambermaid', id: '8'},
+        		{x: 40, y: 440, rgb: '#ffbbbb', label: 'Chambermaid', id: '8'},
         		{x: 40, y: 490, rgb: '#bbbbff', label: 'Stable-lad', id: '9'},
         		{x: 190, y: 40, rgb: '#ffbbbb', label: 'Flower girl', id: '10'},
         		{x: 190, y: 90, rgb: '#bbbbff', label: 'Tutor', id: '11'},
