@@ -331,10 +331,14 @@ function main() {
 	}
 				
 	function wipe(){
+		wipe2();
+		location.reload();	//	breaks xmlhttprequest.send() on Ffx !!
+	};
+	
+	function wipe2(){
 		localStorage.removeItem("savedNodes");
 		localStorage.removeItem("savedEdges");
 		localStorage.removeItem("savedDetails");
-		location.reload();	
 	};
 	
 	function exp(){
@@ -410,133 +414,61 @@ function main() {
 					"via right-click on the canvas.)")) {
 				return;}
 		}
-		wipe();
+		wipe2();
         var targetElement = e.target || e.srcElement;
         if (targetElement.id == "help") {
-            nodes = [
-    			{x: 40, y: 40, rgb: '#ffbbbb', label: 'Click this and look right', id: '0'},
-    			{x: 40, y: 90, rgb: '#d2bbd2', label: 'Move', id: '1'},
-    			{x: 40, y: 140, rgb: '#d2bbd2', label: 'Connect', id: '2'},
-    			{x: 40, y: 190, rgb: '#d2bbd2', label: 'Pan', id: '3'},
-    			{x: 40, y: 240, rgb: '#bbbbff', label: 'Drop input', id: '4'},
-    			{x: 40, y: 290, rgb: '#bbbbff', label: 'Drop a file', id: '5'},
-    			{x: 40, y: 340, rgb: '#bbbbff', label: 'Add single items', id: '6'},
-    			{x: 40, y: 390, rgb: '#bbffbb', label: 'Wipe', id: '7'},
-    			{x: 40, y: 440, rgb: '#bbffbb', label: 'Export', id: '8'},
-    			{x: 40, y: 490, rgb: '#ffff99', label: 'Re-color', id: '9'},
-    			{x: 190, y: 90, rgb: '#d2bbd2', label: 'Drag', id: '10'},
-    			{x: 190, y: 140, rgb: '#d2bbd2', label: 'ALT + drag', id: '11'},
-    			];
-    		app.savedNodes = nodes;
-    		edges = [ 
-    			]; 
-    		app.savedEdges = edges;
-    		app.saveTopology();
-    		details = [
-    			{text: 'Click an item on the left pane to view its details on the right pane.' +
-    				'<br /><br />It is a bit like turning cards face up in the ' +
-    				'game of Pairs (aka Memory or Concentration) -- ' +
-    				'just that it won\'t cost you scores. \'Turn\' as often as you need.'},
-    			{text: 'To move an icon, drag it, i.e., press and hold the left mouse-button, ' +
-    				'move the mouse-pointer, and release the mouse-button.' +
-    				'<br /><br />Do that to move similar items close to each other.'},
-    			{text: 'To connect one icon to a second icon, you will ALT + drag it, i.e. ' +
-    				'<br />- point at the first icon, ' +
-    				'<br />- press and hold the ALT key, ' +
-    				'<br />- then drag the mouse until you reach the second icon,' +
-    				'<br />- then release both the mouse-button and the ALT key.' +
-    				'<br /><br />Exercise: Connect the \'ALT + drag\' icon to some related icon.'},
-    			{text: 'To pan the canvas, drag its background.' +
-    				'<br /><br />Try it! Does it work?'},
-    			{text: 'The easiest way to get your input into the map is ' +
-    				'<br />- to select some text in another window' +
-    				'<br />- and just drag and drop it onto the canvas.' +
-    				'<br /><br />Just try it (except on Safari & IE). ' +
-    				'Don\'t be confused by the unexpected shapes of the mouse pointer -- ' +
-    				'once the mouse is over the canvas, it will change.' +
-    				'<br /><br />Exercise: Select the two items below and drag them to the canvas: <br />' +
-    				'<br />Item 1\tdemo' +
-    				'<br />Item 2\tdemo' +
-    				'<br /><br />Now try text from a different window.'},
-    			{text: 'You may drop a simple text file onto the canvas (except on Safai). Each line becomes an item.' +
-    					'You may separate the \'detail\' part from the \'label\' by a TAB character.'},
-    			{text: 'Right-click the canvas and select \'Add a new item here\', ' +
-    					'then fill in the \'Label\' and/ or \'Details\' fields.' +
-    					'<br />In the (limited) demo version, press \'Done\' after editing.' +
-    					'<br /><br />Single icons are useful if you want to create \'towns\' ' +
-    					'amidst the \'villages\' on your thought map. ' +
-    					'But unlike categories, they don\'t even need a name!'},
-    			{text: 'Right-click the canvas and select \'Wipe clean\'.' +
-    					'<br /><br />This limited map is like a blackboard in a classroom: ' +
-    					'When you re-open your browser tomorrow, you will still ' +
-    					'see the drawings that you left here today. (They live in the browser\'s cache database.)' +
-    					'<br />For new maps, wipe clean. Perhaps export them first.' +
-    					'<br /><br />(The full version supports filing as you would expect it.)'},
-    			{text: 'Right-click the canvas and select \'Export\' to get an .xml file ' + 
-    					'that can be opened in the full Condensr version (free download here:' +
-    					'<a href="http://condensr.de">condensr.de</a>).'},
-    			{text: 'Right-click an icon, and select a new color.'},
-    			{text: 'Drag an icon to move it. Drag the canvas background to pan.'},
-    			{text: 'ALT + drag an icon to connect it.'},
-    			];
-    		app.savedDetails = details;
-    		app.saveTexts();
-    		draw();
+        	fetchXml("help-en.xml");
         } else {
-        	nodes = [	// placeholder for amore professional story
-        		{x: 40, y: 40, rgb: '#ccdddd', label: 'Lady\'s Uncle', id: '0'},
-        		{x: 40, y: 90, rgb: '#bbbbff', label: 'Butler', id: '1'},
-        		{x: 40, y: 140, rgb: '#bbbbff', label: 'Gardener', id: '2'},
-        		{x: 40, y: 190, rgb: '#ffbbbb', label: 'Cook', id: '3'},
-        		{x: 40, y: 240, rgb: '#bbbbff', label: 'Nephew', id: '4'},
-        		{x: 40, y: 290, rgb: '#bbbbff', label: 'Coachman', id: '5'},
-        		{x: 40, y: 340, rgb: '#bbbbff', label: 'Pianist', id: '6'},
-        		{x: 40, y: 390, rgb: '#bbbbff', label: 'Pastor', id: '7'},
-        		{x: 40, y: 440, rgb: '#ffbbbb', label: 'Chambermaid', id: '8'},
-        		{x: 40, y: 490, rgb: '#bbbbff', label: 'Stable-lad', id: '9'},
-        		{x: 190, y: 40, rgb: '#ffbbbb', label: 'Flower girl', id: '10'},
-        		{x: 190, y: 90, rgb: '#bbbbff', label: 'Tutor', id: '11'},
-        		{x: 190, y: 140, rgb: '#bbbbff', label: 'Neighbour boy', id: '12'},
-        		{x: 190, y: 190, rgb: '#ffbbbb', label: 'Governess', id: '13'},
-        		{x: 190, y: 240, rgb: '#ffbbbb', label: 'Aunt from America', id: '14'},
-        		{x: 190, y: 290, rgb: '#bbbbff', label: 'Riding instructor', id: '15'},
-        		{x: 190, y: 340, rgb: '#bbbbff', label: 'Brother in law', id: '16'},
-        		{x: 190, y: 390, rgb: '#bbbbff', label: 'Lord', id: '17'},
-        		{x: 190, y: 440, rgb: '#ffbbbb', label: 'Lady', id: '18'},
-        		{x: 190, y: 490, rgb: '#ffbbbb', label: 'Lady\'s Sister', id: '19'}
-        		];
-        	app.savedNodes = nodes;
-        	edges = [ 
-        		]; 
-        	app.savedEdges = edges;
-        	app.saveTopology();
-        	details = [
-        		{text: 'lies dead in the fishpond. Who does not have an alibi?'},
-        		{text: 'was in the fireside lounge'},
-        		{text: 'was in the horse stable'},
-        		{text: 'was in the fireside lounge'},
-        		{text: 'was in the tower chamber'},
-        		{text: 'was in the smoking room'},
-        		{text: 'was in the music room'},
-        		{text: 'was in the wine cellar'},
-        		{text: 'was in the tower chamber'},
-        		{text: 'was in the garden shed'},
-        		{text: 'was in der Library'},
-        		{text: 'was in the Blue Parlour'},
-        		{text: 'was in the garden shed'},
-        		{text: 'was in the wine cellar'},
-        		{text: 'was in the horse stable'},
-        		{text: 'was in the smoking room'},
-        		{text: 'was in the Onyx bathroom'},
-        		{text: 'was in the music room'},
-        		{text: 'was in der Library'},
-        		{text: 'was in the Blue Parlour'}
-        		];
-        	app.savedDetails = details;
-        	app.saveTexts();
-        	draw();
+        	str = navigator.language.substring(0, 2).toLowerCase();
+        	if (str == "de") { 
+        		fetchXml("example-" + str + ".xml");
+        	} else {
+        		fetchXml("example-en.xml");
+        	}
         }
 	}
+
+	function fetchXml(url) {
+		var xhr = new XMLHttpRequest();
+		xhr.open("GET", url, true);
+		xhr.onreadystatechange = function () {
+			if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+				loadXml(xhr.responseText);
+			}
+		};
+		xhr.send();
+	}
+
+	function loadXml(xml) {
+		var parser;
+		parser = new DOMParser();
+		xmlDoc = parser.parseFromString(xml,"text/xml");
+		var len = xmlDoc.documentElement.childNodes.length;
+		nodes = [];
+		details = [];
+		for (i = 0; i < len; i++) {
+			var x = xmlDoc.getElementsByTagName("topic")[i].getAttribute("x");
+			x = parseInt(x);
+			var y = xmlDoc.getElementsByTagName("topic")[i].getAttribute("y");
+			y = parseInt(y);
+			rgb = xmlDoc.getElementsByTagName("topic")[i].getAttribute("color");
+			var label = xmlDoc.getElementsByTagName("label")[i].childNodes[0].nodeValue;
+			nodes.push({x: x, y: y, rgb: rgb, label: label, id: i});
+			
+			detail = xmlDoc.getElementsByTagName("detail")[i].childNodes[0].nodeValue;
+			details.push({text: detail});
+		}
+		app.savedNodes = nodes;
+		edges = [ 
+			]; 
+		app.savedEdges = edges;
+		app.saveTopology();
+		
+		app.savedDetails = details;
+		app.saveTexts();
+
+		draw();
+	}		
 	
 	function recolor(e) {
         var targetElement = e.target || e.srcElement;
