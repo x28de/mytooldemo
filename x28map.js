@@ -351,7 +351,7 @@ function main() {
 			node = nodes[i];
 //			content += "<topic ID=\"" + node.id + "\" x=\"" + node.x + "\" y=\"" + node.y + "\" color=\"" + node.rgb + "\">" + 
 			id = parseInt(node.id) + 1;		// respecting an old bug
-			content += "<topic id=\"" + id + "\" x=\"" + node.x + "\" y=\"" + node.y + "\" color=\"" + node.rgb + "\">" + 
+			content += "<topic ID=\"" + id + "\" x=\"" + node.x + "\" y=\"" + node.y + "\" color=\"" + node.rgb + "\">" + 
 					"<label><![CDATA[" + node.label + "]]></label>";
 			content += "<detail><![CDATA[" + details[i].text + "]]></detail></topic>";
 		}
