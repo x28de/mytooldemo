@@ -90,8 +90,8 @@ function main() {
 	draw(null);
 	var initText = document.getElementById("demo").innerHTML;
 				
-	var fillForm = document.getElementById("fillDetails");
-	fillForm.addEventListener('submit',newnode2);
+	var fillbutton = document.getElementById("doneButton");
+	fillbutton.addEventListener('click',newnode2);
 	
 	var colors = ["#d2bbd2", "#bbbbff", "#bbffbb", "#ffff99", 
 		"#ffe8aa", "#ffbbbb", "#eeeeee", "#ccdddd"];
@@ -327,6 +327,7 @@ function main() {
 		details = app.savedDetails;
 			
 		document.getElementById("rmenu").className = "hide";
+		location.reload();	
 		// TODO: highlight(id, ctx, nodes);	
 	}
 				
