@@ -310,6 +310,7 @@ function main() {
 	function newnode() {
 		document.getElementById("demo").className = "hide";
 		document.getElementById("fillDetails").className = "fill";
+		mousedown = false;	// for mac
 	}
     		
 	function newnode2() {
@@ -327,6 +328,7 @@ function main() {
 		details = app.savedDetails;
 			
 		document.getElementById("rmenu").className = "hide";
+		document.forms[0].elements[1].value = "";
 		location.reload();	
 		// TODO: highlight(id, ctx, nodes);	
 	}
@@ -476,5 +478,7 @@ function main() {
         colorID = targetElement.id.substring(5, 6);
 		nodes[selectedNode].rgb = colors[colorID];
 		document.getElementById("rmenu2").className = "hide";
+		mousedown = false;
+		draw();
 	}
 }	
