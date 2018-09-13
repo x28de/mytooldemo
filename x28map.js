@@ -3,6 +3,9 @@
  */
 function main() { 
 
+//
+//	Build the page
+	
 	var nodes;
 	var edges;
 	var details;
@@ -99,6 +102,8 @@ function main() {
 	document.getElementById("help").addEventListener('click', loadHelp);
 	document.getElementById("example").addEventListener('click', loadHelp);
 
+	processRequestString();
+	
 //
 //	Pointer down/ move/ up
 				
@@ -329,12 +334,14 @@ function main() {
 			
 		document.getElementById("rmenu").className = "hide";
 		document.forms[0].elements[1].value = "";
+		localStorage.savedURL = "reload";
 		location.reload();	
 		// TODO: highlight(id, ctx, nodes);	
 	}
 				
 	function wipe(){
 		wipe2();
+		localStorage.savedURL = "reload";
 		location.reload();	//	breaks xmlhttprequest.send() on Ffx !!
 	};
 	
@@ -390,6 +397,7 @@ function main() {
 				detail = fields[1];
 			}
 			if (!label && !detail) continue; 
+			if (label.startsWith("[<")) continue;  // Quick & dirty to exclude gRSShopper Edit button
 			ynew = y + j * 50;
 			if (j > 9) {
 				j = 0;
@@ -411,23 +419,22 @@ function main() {
 	}
 	
 	function loadHelp(e) {
-		if (app.savedNodes.length > 0) {
-			if (!confirm("This will wipe clean your map. \n" +
-					"(You may want to export it first,\n" +
-					"via right-click on the canvas.)")) {
-				return;}
-		}
-		wipe2();
         var targetElement = e.target || e.srcElement;
+        helpHost = "http://x28hd.de/";
         if (targetElement.id == "help") {
-        	fetchXml("help-en.xml");
+        	helpFile = "help-en.xml";
         } else {
         	str = navigator.language.substring(0, 2).toLowerCase();
         	if (str == "de") { 
-        		fetchXml("example-" + str + ".xml");
+        		helpFile = "example-" + str + ".xml";
         	} else {
-        		fetchXml("example-en.xml");
+        		helpFile = "example-en.xml";
         	}
+        }
+        if (location.host != helpHost) {
+        	window.open(helpHost + "demo/?" + helpFile);
+        } else {
+    		fetchXml(helpFile);
         }
 	}
 
@@ -435,12 +442,48 @@ function main() {
 		var xhr = new XMLHttpRequest();
 		xhr.open("GET", url, true);
 		xhr.onreadystatechange = function () {
-			if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
-				loadXml(xhr.responseText);
+			if (xhr.readyState === XMLHttpRequest.DONE) {
+				if (xhr.status === 200) {
+					if (url.toLowerCase().endsWith(".xml")) {
+						whereToLoad("clean");
+						loadXml(xhr.responseText);
+					} else {
+						whereToLoad("append");
+						newStuff(xhr.responseText);
+					}
+				} else alert("Error loading url \n" + url + ":\n" + xhr.status + " " + xhr.statusText);
 			}
 		};
 		xhr.send();
 	}
+	
+	function whereToLoad(type) {
+		if (type == "clean") {
+			if (app.savedNodes.length > 0) {
+				if (!confirm("This will wipe clean your map. \n" +
+						"(You may want to export it first,\n" +
+						"via right-click on the canvas.)")) {
+					return;}
+			}
+			wipe2();
+		} else {
+			if (app.savedNodes.length > 0) {
+				xmax = -999999;
+				ymin = 999999;
+				for (var i = 0; i < nodes.length; i++) {
+					x = nodes[i].x;
+					if (x > xmax) xmax = x;
+					y = nodes[i].y;
+					if (y < ymin) ymin = y;
+				}
+				x = xmax + 150;
+				y = ymin - 40;
+			} else {
+				x = 40;
+				y = 40;
+			}
+		}
+	} 
 
 	function loadXml(xml) {
 		var parser;
@@ -472,6 +515,30 @@ function main() {
 
 		draw();
 	}		
+	
+	function processRequestString() {
+		var what = location.search.substr(1);
+		if (what) {
+			var lastWhat = localStorage.savedURL;
+			if (lastWhat == "reload") {
+				localStorage.removeItem("savedURL");
+				return;
+			} else if (lastWhat == what) {
+				if (!confirm("Really add this once more? \n" + what)) trimURL();
+				return;
+			}
+			fetchXml(what);
+			localStorage.savedURL = what;
+		} else {
+			localStorage.removeItem("savedURL");
+		}
+	}
+	
+	function trimURL() {
+		href = location.href;
+		baseUrl = href.substring(0, href.indexOf('?'));
+		location.assign(baseUrl);
+	}
 	
 	function recolor(e) {
         var targetElement = e.target || e.srcElement;
