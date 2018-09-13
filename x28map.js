@@ -6,6 +6,39 @@ function main() {
 //
 //	Build the page
 	
+	document.open();
+	document.write(
+			'<html><head>' + 
+			'<meta charset="UTF-8"><title>Condensr Demo (limmited)</title>' +
+			'<link rel="stylesheet" type="text/css" href="http://x28hd.de/demo/x28map.css"></head>' + 
+			'<canvas id="myCanvas" width="760" height="580">' +
+			'Your browser does not support the HTML5 canvas tag. </canvas>' +
+			'<div class="hide" id="rmenu">' + 
+			'	<a id = "new" class=\'opt\'>Add a new item here</a><br />' + 
+			'	<a id = "export" class=\'opt\' href=\'x28export.xml\'>Export</a><br />' + 
+			'	<a id = "wipe" class=\'opt\'>Wipe clean</a><br />' + 
+			'</div><div class="hide" id="rmenu2">' + 
+			'	<a id = "color0" class=\'opt\'>Change color</a><br />' + 
+			'	<a id = "color1" class=\'opt\'>Change color</a><br />' + 
+			'	<a id = "color2" class=\'opt\'>Change color</a><br />' + 
+			'	<a id = "color3" class=\'opt\'>Change color</a><br />' + 
+			'	<a id = "color4" class=\'opt\'>Change color</a><br />' + 
+			'	<a id = "color5" class=\'opt\'>Change color</a><br />' + 
+			'	<a id = "color6" class=\'opt\'>Pale</a><br />' + 
+			'	<a id = "color7" class=\'opt\'>Dark</a><br /></div>' + 
+			'<div id="demo"><em>Drag an icon to move it;  <br />click an icon for its details.<br />' + 
+			'ALT + drag an icon to connect it.<br />&nbsp;<br />&nbsp;<br />' + 
+			'<a id="example" href="#">Play the intro game?</a><br />&nbsp;<br />' + 
+			'<a id="help" href="#">Get help?</a></em> </div>' + 
+			'<div id="fillDetails" class="hide">' + 
+			'		<form action="#" method="post">' + 
+			'		<span style="font-size: .7em;">Label</span>		<br />' + 
+			'		<input type="text" name="label" autocomplete="off" title="Enter a label (optional)" /><br />' + 
+			'		<span style="font-size: .7em;">Detail</span>' + 
+			'		<textarea name="detail" title="Enter more text (optional)"></textarea>		<br />' + 
+			'		<button id ="doneButton" type="button">Done</button>' + 
+			'		</form></div>'); 
+	
 	var nodes;
 	var edges;
 	var details;
