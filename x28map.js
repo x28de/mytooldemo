@@ -6,10 +6,9 @@ function main() {
 //
 //	Build the page
 	
-	document.open();
-	document.write(
+	document.body.innerHTML = 
 			'<html><head>' + 
-			'<meta charset="UTF-8"><title>Condensr Demo (limmited)</title>' +
+			'<meta charset="UTF-8"><title>Condensr Demo (limited)</title>' +
 			'<link rel="stylesheet" type="text/css" href="http://x28hd.de/demo/x28map.css"></head>' + 
 			'<canvas id="myCanvas" width="760" height="580">' +
 			'Your browser does not support the HTML5 canvas tag. </canvas>' +
@@ -37,7 +36,7 @@ function main() {
 			'		<span style="font-size: .7em;">Detail</span>' + 
 			'		<textarea name="detail" title="Enter more text (optional)"></textarea>		<br />' + 
 			'		<button id ="doneButton" type="button">Done</button>' + 
-			'		</form></div>'); 
+			'		</form></div>'; 
 	
 	var nodes;
 	var edges;
@@ -558,7 +557,6 @@ function main() {
 				return;
 			} else if (lastWhat == what) {
 				if (!confirm("Really add this once more? \n" + what)) trimURL();
-				return;
 			}
 			fetchXml(what);
 			localStorage.savedURL = what;
