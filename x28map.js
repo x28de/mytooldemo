@@ -429,7 +429,7 @@ function main() {
 				detail = fields[1];
 			}
 			if (!label && !detail) continue; 
-			if (label.startsWith("[<")) continue;  // Quick & dirty to exclude gRSShopper Edit button
+			if (label.substring(0, 2) == "[<") continue;  // Quick & dirty to exclude gRSShopper Edit button
 			ynew = y + j * 50;
 			if (j > 9) {
 				j = 0;
@@ -452,7 +452,7 @@ function main() {
 	
 	function loadHelp(e) {
         var targetElement = e.target || e.srcElement;
-        helpHost = "http://x28hd.de/";
+        helpHost = "x28hd.de";
         if (targetElement.id == "help") {
         	helpFile = "help-en.xml";
         } else {
@@ -464,7 +464,7 @@ function main() {
         	}
         }
         if (location.host != helpHost) {
-        	window.open(helpHost + "demo/?" + helpFile);
+        	window.open("http://" + helpHost + "/demo/?" + helpFile);
         } else {
     		fetchXml(helpFile);
         }
@@ -476,7 +476,8 @@ function main() {
 		xhr.onreadystatechange = function () {
 			if (xhr.readyState === XMLHttpRequest.DONE) {
 				if (xhr.status === 200) {
-					if (url.toLowerCase().endsWith(".xml")) {
+					ending = url.substr(url.length - 4, url.length).toLowerCase();
+					if (ending == ".xml") {
 						whereToLoad("clean");
 						loadXml(xhr.responseText);
 					} else {
