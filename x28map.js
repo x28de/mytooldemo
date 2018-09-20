@@ -3,6 +3,9 @@
  */
 function main() { 
 
+	if (navigator.userAgent.indexOf("Edge/") > 0) 
+		alert("Warning: From the Edge browser, maps cannot be exported !");
+	
 //
 //	Build the page
 	
