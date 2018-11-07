@@ -384,6 +384,9 @@ function main() {
 		localStorage.removeItem("savedNodes");
 		localStorage.removeItem("savedEdges");
 		localStorage.removeItem("savedDetails");
+		nodes = [];
+		edges = [],
+		details = [];
 	};
 	
 	function exp(){
@@ -528,7 +531,10 @@ function main() {
 		var len = xmlDoc.documentElement.childNodes.length;
 		nodes = [];
 		details = [];
+		oldIDs = [];
 		for (i = 0; i < len; i++) {
+			var nodeType = xmlDoc.documentElement.childNodes[i].nodeName;
+			if (nodeType == "topic") {
 			var x = xmlDoc.getElementsByTagName("topic")[i].getAttribute("x");
 			x = parseInt(x);
 			var y = xmlDoc.getElementsByTagName("topic")[i].getAttribute("y");
@@ -539,10 +545,23 @@ function main() {
 			
 			detail = xmlDoc.getElementsByTagName("detail")[i].childNodes[0].nodeValue;
 			details.push({text: detail});
+			
+			var oldID = xmlDoc.getElementsByTagName("topic")[i].getAttribute("ID");
+			oldID = parseInt(oldID);
+			oldIDs.push(oldID);
+			} else {
+				var oldN1 = xmlDoc.documentElement.childNodes[i].getAttribute("n1");
+				oldN1 = parseInt(oldN1);
+				var n1 = oldIDs.indexOf(oldN1);
+				var oldN2 = xmlDoc.documentElement.childNodes[i].getAttribute("n2");
+				oldN2 = parseInt(oldN2);
+				var n2 = oldIDs.indexOf(oldN2);
+				rgb = xmlDoc.documentElement.childNodes[i].getAttribute("color");
+				edges.push({n1: n1, n2: n2, rgb: rgb});
+				draw();
+			}
 		}
 		app.savedNodes = nodes;
-		edges = [ 
-			]; 
 		app.savedEdges = edges;
 		app.saveTopology();
 		
@@ -555,6 +574,10 @@ function main() {
 	function processRequestString() {
 		var what = location.search.substr(1);
 		if (what) {
+			if (what == "wipe") {
+				wipe2();
+				return;
+			}
 			var lastWhat = localStorage.savedURL;
 			if (lastWhat == "reload") {
 				localStorage.removeItem("savedURL");
