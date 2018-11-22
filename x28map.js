@@ -532,24 +532,31 @@ function main() {
 		nodes = [];
 		details = [];
 		oldIDs = [];
+		id = 0;
 		for (i = 0; i < len; i++) {
 			var nodeType = xmlDoc.documentElement.childNodes[i].nodeName;
 			if (nodeType == "topic") {
-			var x = xmlDoc.getElementsByTagName("topic")[i].getAttribute("x");
+			var topic = xmlDoc.documentElement.childNodes[i];
+			var x = topic.getAttribute("x");
 			x = parseInt(x);
-			var y = xmlDoc.getElementsByTagName("topic")[i].getAttribute("y");
+			var y = topic.getAttribute("y");
 			y = parseInt(y);
-			rgb = xmlDoc.getElementsByTagName("topic")[i].getAttribute("color");
-			var label = xmlDoc.getElementsByTagName("label")[i].childNodes[0].nodeValue;
-			nodes.push({x: x, y: y, rgb: rgb, label: label, id: i});
+			rgb = topic.getAttribute("color");
+			var label = "";
+			if (topic.getElementsByTagName("label")[0].childNodes[0]) {
+				label = topic.getElementsByTagName("label")[0].childNodes[0].nodeValue;
+			}
+			nodes.push({x: x, y: y, rgb: rgb, label: label, id: id++});
 			
-			detail = xmlDoc.getElementsByTagName("detail")[i].childNodes[0].nodeValue;
+			if (topic.getElementsByTagName("detail")[0].childNodes[0]) {
+				detail = topic.getElementsByTagName("detail")[0].childNodes[0].nodeValue;
+			}
 			details.push({text: detail});
 			
-			var oldID = xmlDoc.getElementsByTagName("topic")[i].getAttribute("ID");
+			var oldID = topic.getAttribute("ID");
 			oldID = parseInt(oldID);
 			oldIDs.push(oldID);
-			} else {
+			} else if (nodeType == "assoc") {
 				var oldN1 = xmlDoc.documentElement.childNodes[i].getAttribute("n1");
 				oldN1 = parseInt(oldN1);
 				var n1 = oldIDs.indexOf(oldN1);
