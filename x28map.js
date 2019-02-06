@@ -1,10 +1,13 @@
 /**
  * 
  */
+	var channel;
+	var lastMessage = "";
+
 function main() { 
 
-	if (navigator.userAgent.indexOf("Edge/") > 0) 
-		alert("Warning: From the Edge browser, maps cannot be exported !");
+//	if (navigator.userAgent.indexOf("Edge/") > 0) 
+//		alert("Warning: From the Edge browser, maps cannot be exported !");
 	
 //
 //	Build the page
@@ -45,6 +48,15 @@ function main() {
 	var edges;
 	var details;
 		
+	new pusherapp();
+	channel.bind('client-my-event', function(data) {
+		// do something meaningful with the data here
+//		alert(data.publishNode);
+		var s = JSON.parse(data.publishNode);
+		alert(s.label);
+		nodes.push({x: s.x, y: s.y, rgb: s.rgb, label: s.label, id: s.id});
+	});
+	
 //
 //	Try to initialize the core arrays from localstorage 		
 
@@ -139,6 +151,8 @@ function main() {
 
 	processRequestString();
 	
+	var publishNode;
+	
 //
 //	Pointer down/ move/ up
 				
@@ -206,6 +220,11 @@ function main() {
 		edges = app.savedEdges;
     		
 		draw(evt);
+//		try {
+//		 channel.trigger('client-my-event', {"message":"Hello from " + navigator.userAgent});
+//		} catch(e) {
+//			alert(e.toString());
+//		}
 	}  
     		
 	if (window.PointerEvent) { 
@@ -357,6 +376,18 @@ function main() {
 		id = nodes.length;
 		var newLabel = document.forms[0].elements[0].value;
 		nodes.push({x: x, y: y, rgb: '#ffbbbb', label: newLabel, id: id});
+		var publishNode = {
+				x,
+				y,
+				rgb: '#ffffbb',
+				label: newLabel,
+				id
+		};
+//		publishNode = JSON.stringify({x: x, y: y, rgb: '#ffbbbb', label: newLabel, id: id});
+		publishData = JSON.stringify(publishNode);
+		alert(publishData);
+		channel.trigger('client-my-event', {"publishNode" : publishData});
+
 		app.saveTopology();
 
 		var newDetail = document.forms[0].elements[1].value;
@@ -370,7 +401,7 @@ function main() {
 		document.getElementById("rmenu").className = "hide";
 		document.forms[0].elements[1].value = "";
 		localStorage.savedURL = "reload";
-		location.reload();	
+//		location.reload();	
 		// TODO: highlight(id, ctx, nodes);	
 	}
 				
