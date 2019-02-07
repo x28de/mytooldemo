@@ -6,8 +6,8 @@
 
 function main() { 
 
-//	if (navigator.userAgent.indexOf("Edge/") > 0) 
-//		alert("Warning: From the Edge browser, maps cannot be exported !");
+	if (navigator.userAgent.indexOf("Edge/") > 0) 
+		alert("Warning: From the Edge browser, maps cannot be exported !");
 	
 //
 //	Build the page
@@ -51,13 +51,11 @@ function main() {
 	new pusherapp();
 	channel.bind('client-my-event', function(data) {
 		// do something meaningful with the data here
-//		alert(data.publishNode);
 		var s = JSON.parse(data.publishNode);
-		alert(s.label);
 		if (s.type == 'node') {
-		nodes.push({x: s.x, y: s.y, rgb: s.rgb, label: s.label, id: s.id});
-		details.push({text: s.detail});
-		newnode3();
+			nodes.push({x: s.x, y: s.y, rgb: s.rgb, label: s.label, id: s.id});
+			details.push({text: s.detail});
+			newnode3();
 		} else {
 			n1 = -1;
 			n2 = -1;
@@ -66,7 +64,6 @@ function main() {
 				if (nodes[i].id == s.n2) n2 = i;
 			}
 			if (n1 < 0 || n2 < 0) alert("Unknown item referenced.\nOut of sync?");
-			alert('edge from ' + n1 + " to " + n2);
 			edges.push({n1: n1, n2: n2, rgb: s.rgb});
 			app.saveTopology();
 		}
@@ -221,7 +218,6 @@ function main() {
 				if (n1.length > 5 && n2.length > 5) {  // long uuid, i.e. for publishing
 					var publishNode = {type: 'edge', n1, n2, rgb: '#c0c0c0'};
 					publishData = JSON.stringify(publishNode);
-					alert(publishData);
 					channel.trigger('client-my-event', {"publishNode" : publishData});
 				}
 			} 
@@ -243,11 +239,6 @@ function main() {
 		edges = app.savedEdges;
     		
 		draw(evt);
-//		try {
-//		 channel.trigger('client-my-event', {"message":"Hello from " + navigator.userAgent});
-//		} catch(e) {
-//			alert(e.toString());
-//		}
 	}  
     		
 	if (window.PointerEvent) { 
@@ -410,9 +401,7 @@ function main() {
 				id,
 				detail: newDetail
 		};
-//		publishNode = JSON.stringify({x: x, y: y, rgb: '#ffbbbb', label: newLabel, id: id});
 		publishData = JSON.stringify(publishNode);
-		alert(publishData);
 		channel.trigger('client-my-event', {"publishNode" : publishData});
 
 		newnode3();
@@ -420,8 +409,6 @@ function main() {
 		document.getElementById("rmenu").className = "hide";
 		document.forms[0].elements[0].value = "";
 		document.forms[0].elements[1].value = "";
-//		localStorage.savedURL = "reload";
-//		location.reload();	
 		document.getElementById("demo").className = "show";
 		document.getElementById("fillDetails").className = "hide";
 		// TODO: highlight(id, ctx, nodes);	
