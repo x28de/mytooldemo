@@ -54,7 +54,22 @@ function main() {
 //		alert(data.publishNode);
 		var s = JSON.parse(data.publishNode);
 		alert(s.label);
+		if (s.type == 'node') {
 		nodes.push({x: s.x, y: s.y, rgb: s.rgb, label: s.label, id: s.id});
+		details.push({text: s.detail});
+		newnode3();
+		} else {
+			n1 = -1;
+			n2 = -1;
+			for (var i = 0; i < nodes.length; i++) { 
+				if (nodes[i].id == s.n1) n1 = i;
+				if (nodes[i].id == s.n2) n2 = i;
+			}
+			if (n1 < 0 || n2 < 0) alert("Unknown item referenced.\nOut of sync?");
+			alert('edge from ' + n1 + " to " + n2);
+			edges.push({n1: n1, n2: n2, rgb: s.rgb});
+			app.saveTopology();
+		}
 	});
 	
 //
@@ -201,6 +216,14 @@ function main() {
 			targetNode = findClicked(evt);
 			if ((targetNode > -1) && (targetNode != selectedNode)) {
 				edges.push({n1: selectedNode + 0, n2: targetNode + 0, rgb: '#c0c0c0'});
+				n1 = nodes[selectedNode + 0].id;
+				n2 = nodes[targetNode + 0].id;
+				if (n1.length > 5 && n2.length > 5) {  // long uuid, i.e. for publishing
+					var publishNode = {type: 'edge', n1, n2, rgb: '#c0c0c0'};
+					publishData = JSON.stringify(publishNode);
+					alert(publishData);
+					channel.trigger('client-my-event', {"publishNode" : publishData});
+				}
 			} 
 			targetNode = -1;
 		}
@@ -330,7 +353,7 @@ function main() {
 	function highlight(i, ctx, nodes) {
 		ctx.strokeStyle = "#ff0000";
 		ctx.strokeRect(nodes[i].x - 11, nodes[i].y - 11, 22, 22); 
-		myFunction(nodes[i].id); 
+		myFunction(i); 
 	}
 
 	function myFunction(detail) { 
@@ -373,36 +396,44 @@ function main() {
 	}
     		
 	function newnode2() {
-		id = nodes.length;
+		id = uuidv4();
 		var newLabel = document.forms[0].elements[0].value;
-		nodes.push({x: x, y: y, rgb: '#ffbbbb', label: newLabel, id: id});
+		nodes.push({x: x, y: y, rgb: '#ffff66', label: newLabel, id: id});
+		var newDetail = document.forms[0].elements[1].value;
+		details.push({text: newDetail});
 		var publishNode = {
+				type: 'node',
 				x,
 				y,
-				rgb: '#ffffbb',
+				rgb: '#ffff66',
 				label: newLabel,
-				id
+				id,
+				detail: newDetail
 		};
 //		publishNode = JSON.stringify({x: x, y: y, rgb: '#ffbbbb', label: newLabel, id: id});
 		publishData = JSON.stringify(publishNode);
 		alert(publishData);
 		channel.trigger('client-my-event', {"publishNode" : publishData});
 
+		newnode3();
+		
+		document.getElementById("rmenu").className = "hide";
+		document.forms[0].elements[0].value = "";
+		document.forms[0].elements[1].value = "";
+//		localStorage.savedURL = "reload";
+//		location.reload();	
+		document.getElementById("demo").className = "show";
+		document.getElementById("fillDetails").className = "hide";
+		// TODO: highlight(id, ctx, nodes);	
+	}
+	
+	function newnode3(){
 		app.saveTopology();
-
-		var newDetail = document.forms[0].elements[1].value;
-		details.push({text: newDetail});
 		app.savedDetails = details;
 		app.saveTexts();
 		app.savedDetails = localStorage.savedDetails;
 		app.savedDetails = JSON.parse(app.savedDetails);
 		details = app.savedDetails;
-			
-		document.getElementById("rmenu").className = "hide";
-		document.forms[0].elements[1].value = "";
-		localStorage.savedURL = "reload";
-//		location.reload();	
-		// TODO: highlight(id, ctx, nodes);	
 	}
 				
 	function wipe(){
@@ -644,4 +675,12 @@ function main() {
 		mousedown = false;
 		draw();
 	}
+	
+	function uuidv4() {	// by Stackoverflow user broofa
+		return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+			var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+			return v.toString(16);
+		});
+	}
+
 }	
