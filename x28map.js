@@ -1,6 +1,9 @@
 /**
  * 
  */
+	var channel;
+	var lastMessage = "";
+
 function main() { 
 
 	if (navigator.userAgent.indexOf("Edge/") > 0) 
@@ -45,6 +48,8 @@ function main() {
 	var edges;
 	var details;
 		
+	new whiteboard();
+	
 //
 //	Try to initialize the core arrays from localstorage 		
 
@@ -137,7 +142,8 @@ function main() {
 	document.getElementById("help").addEventListener('click', loadHelp);
 	document.getElementById("example").addEventListener('click', loadHelp);
 
-	processRequestString();
+	
+	var publishNode;
 	
 //
 //	Pointer down/ move/ up
@@ -187,6 +193,15 @@ function main() {
 			targetNode = findClicked(evt);
 			if ((targetNode > -1) && (targetNode != selectedNode)) {
 				edges.push({n1: selectedNode + 0, n2: targetNode + 0, rgb: '#c0c0c0'});
+				if (channel) {
+					n1 = nodes[selectedNode + 0].id;
+					n2 = nodes[targetNode + 0].id;
+					if (n1.length > 5 && n2.length > 5) {  // long uuid, i.e. for publishing
+						var publishNode = {type: 'edge', n1, n2, rgb: '#c0c0c0'};
+						publishData = JSON.stringify(publishNode);
+						channel.trigger('client-my-event', {"publishNode" : publishData});
+					}
+				}
 			} 
 			targetNode = -1;
 		}
@@ -311,7 +326,7 @@ function main() {
 	function highlight(i, ctx, nodes) {
 		ctx.strokeStyle = "#ff0000";
 		ctx.strokeRect(nodes[i].x - 11, nodes[i].y - 11, 22, 22); 
-		myFunction(nodes[i].id); 
+		myFunction(i); 
 	}
 
 	function myFunction(detail) { 
@@ -354,24 +369,35 @@ function main() {
 	}
     		
 	function newnode2() {
-		id = nodes.length;
+		id = uuidv4();
 		var newLabel = document.forms[0].elements[0].value;
-		nodes.push({x: x, y: y, rgb: '#ffbbbb', label: newLabel, id: id});
-		app.saveTopology();
-
+		nodes.push({x: x, y: y, rgb: '#ffff66', label: newLabel, id: id});
 		var newDetail = document.forms[0].elements[1].value;
 		details.push({text: newDetail});
+		if (channel) {
+			var publishNode = {type: 'node', x,	y, rgb: '#ffff66', 
+					label: newLabel, id, detail: newDetail};
+			publishData = JSON.stringify(publishNode);
+			channel.trigger('client-my-event', {"publishNode" : publishData});
+		}
+
+		newnode3();
+		
+		document.getElementById("rmenu").className = "hide";
+		document.forms[0].elements[0].value = "";
+		document.forms[0].elements[1].value = "";
+		document.getElementById("demo").className = "show";
+		document.getElementById("fillDetails").className = "hide";
+		// TODO: highlight(id, ctx, nodes);	
+	}
+	
+	function newnode3(){
+		app.saveTopology();
 		app.savedDetails = details;
 		app.saveTexts();
 		app.savedDetails = localStorage.savedDetails;
 		app.savedDetails = JSON.parse(app.savedDetails);
 		details = app.savedDetails;
-			
-		document.getElementById("rmenu").className = "hide";
-		document.forms[0].elements[1].value = "";
-		localStorage.savedURL = "reload";
-		location.reload();	
-		// TODO: highlight(id, ctx, nodes);	
 	}
 				
 	function wipe(){
@@ -613,4 +639,81 @@ function main() {
 		mousedown = false;
 		draw();
 	}
+	
+//
+//	Shared whiteboard 
+	
+	function whiteboard() {
+		var wb = getUrlParameter('wb');
+		if (!wb) {
+			processRequestString();	// TODO: integrate here
+			return;
+		}
+		if (wb == "new") {
+			location.search = location.search
+			? '&wb=' + getUniqueId() : 'wb=' + getUniqueId();
+			return;
+		}
+		var pusher = new Pusher('4adbc41a101586f6da84', {	// change to your own values
+			cluster: 'eu',
+			forceTLS: true,
+//			authEndpoint: 'http://condensr.de/whiteboard/php/x28auth.php',  
+			authEndpoint: 'http://127.0.0.1/wp/whiteboard/php/x28auth.php',  
+			auth: {
+				headers: {
+					'X-CSRF-Token': "SOME_CSRF_TOKEN"
+				}
+			}
+		});
+
+//		subscribe to the changes via Pusher
+		channel = pusher.subscribe(wb);
+		channel.bind('pusher:subscription_error', function(status) {
+			alert("Subscription failed: " + status);
+		});
+		channel.bind('pusher:subscription_succeeded', function() {
+			alert("Successfully subscribed.");
+		});
+		
+		channel.bind('client-my-event', function(data) {
+			// do something meaningful with the data here
+			var s = JSON.parse(data.publishNode);
+			if (s.type == 'node') {
+				nodes.push({x: s.x, y: s.y, rgb: s.rgb, label: s.label, id: s.id});
+				details.push({text: s.detail});
+				newnode3();
+			} else {
+				n1 = -1;
+				n2 = -1;
+				for (var i = 0; i < nodes.length; i++) { 
+					if (nodes[i].id == s.n1) n1 = i;
+					if (nodes[i].id == s.n2) n2 = i;
+				}
+				if (n1 < 0 || n2 < 0) alert("Unknown item referenced.\nOut of sync?");
+				edges.push({n1: n1, n2: n2, rgb: s.rgb});
+				app.saveTopology();
+			}
+		});
+	}
+
+	// function to get a query param's value
+	function getUrlParameter(name) {
+		name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+		var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+		var results = regex.exec(location.search);
+		return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+	};
+
+	// a unique random key generator
+	function getUniqueId () {
+		return 'private-' + Math.random().toString(36).substr(2, 9);
+	}
+	
+	function uuidv4() {	// by Stackoverflow user broofa
+		return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+			var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+			return v.toString(16);
+		});
+	}
+
 }	
