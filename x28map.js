@@ -48,7 +48,7 @@ function main() {
 	var edges;
 	var details;
 		
-	new pusherapp();
+	new whiteboard();
 	
 //
 //	Try to initialize the core arrays from localstorage 		
@@ -193,12 +193,14 @@ function main() {
 			targetNode = findClicked(evt);
 			if ((targetNode > -1) && (targetNode != selectedNode)) {
 				edges.push({n1: selectedNode + 0, n2: targetNode + 0, rgb: '#c0c0c0'});
-				n1 = nodes[selectedNode + 0].id;
-				n2 = nodes[targetNode + 0].id;
-				if (n1.length > 5 && n2.length > 5) {  // long uuid, i.e. for publishing
-					var publishNode = {type: 'edge', n1, n2, rgb: '#c0c0c0'};
-					publishData = JSON.stringify(publishNode);
-					channel.trigger('client-my-event', {"publishNode" : publishData});
+				if (channel) {
+					n1 = nodes[selectedNode + 0].id;
+					n2 = nodes[targetNode + 0].id;
+					if (n1.length > 5 && n2.length > 5) {  // long uuid, i.e. for publishing
+						var publishNode = {type: 'edge', n1, n2, rgb: '#c0c0c0'};
+						publishData = JSON.stringify(publishNode);
+						channel.trigger('client-my-event', {"publishNode" : publishData});
+					}
 				}
 			} 
 			targetNode = -1;
@@ -372,17 +374,12 @@ function main() {
 		nodes.push({x: x, y: y, rgb: '#ffff66', label: newLabel, id: id});
 		var newDetail = document.forms[0].elements[1].value;
 		details.push({text: newDetail});
-		var publishNode = {
-				type: 'node',
-				x,
-				y,
-				rgb: '#ffff66',
-				label: newLabel,
-				id,
-				detail: newDetail
-		};
-		publishData = JSON.stringify(publishNode);
-		channel.trigger('client-my-event', {"publishNode" : publishData});
+		if (channel) {
+			var publishNode = {type: 'node', x,	y, rgb: '#ffff66', 
+					label: newLabel, id, detail: newDetail};
+			publishData = JSON.stringify(publishNode);
+			channel.trigger('client-my-event', {"publishNode" : publishData});
+		}
 
 		newnode3();
 		
@@ -646,16 +643,15 @@ function main() {
 //
 //	Shared whiteboard 
 	
-	function pusherapp() {
-		var id = getUrlParameter('id');
-		alert("id = " + id + ".");
-		if (!id) {
+	function whiteboard() {
+		var wb = getUrlParameter('wb');
+		if (!wb) {
 			processRequestString();	// TODO: integrate here
 			return;
 		}
-		if (id == "new") {
+		if (wb == "new") {
 			location.search = location.search
-			? '&id=' + getUniqueId() : 'id=' + getUniqueId();
+			? '&wb=' + getUniqueId() : 'wb=' + getUniqueId();
 			return;
 		}
 		var pusher = new Pusher('4adbc41a101586f6da84', {	// change to your own values
@@ -671,7 +667,7 @@ function main() {
 		});
 
 //		subscribe to the changes via Pusher
-		channel = pusher.subscribe(id);
+		channel = pusher.subscribe(wb);
 		channel.bind('pusher:subscription_error', function(status) {
 			alert("Subscription failed: " + status);
 		});
