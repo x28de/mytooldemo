@@ -197,7 +197,7 @@ function main() {
 					n1 = nodes[selectedNode + 0].id;
 					n2 = nodes[targetNode + 0].id;
 					if (n1.length > 5 && n2.length > 5) {  // long uuid, i.e. for publishing
-						var publishNode = {type: 'edge', n1, n2, rgb: '#c0c0c0'};
+						var publishNode = {type: 'edge', n1: n1, n2: n2, rgb: '#c0c0c0'};
 						publishData = JSON.stringify(publishNode);
 						channel.trigger('client-my-event', {"publishNode" : publishData});
 					}
@@ -371,12 +371,13 @@ function main() {
 	function newnode2() {
 		id = uuidv4();
 		var newLabel = document.forms[0].elements[0].value;
-		nodes.push({x: x, y: y, rgb: '#ffff66', label: newLabel, id: id});
+		rgb = (channel) ? "#ffff66" : "#ccdddd";
+		nodes.push({x: x, y: y, rgb: rgb, label: newLabel, id: id});
 		var newDetail = document.forms[0].elements[1].value;
 		details.push({text: newDetail});
 		if (channel) {
-			var publishNode = {type: 'node', x,	y, rgb: '#ffff66', 
-					label: newLabel, id, detail: newDetail};
+			var publishNode = {type: 'node', x: x,	y: y, rgb: rgb, 
+					label: newLabel, id: id, detail: newDetail};
 			publishData = JSON.stringify(publishNode);
 			channel.trigger('client-my-event', {"publishNode" : publishData});
 		}
@@ -389,6 +390,7 @@ function main() {
 		document.getElementById("demo").className = "show";
 		document.getElementById("fillDetails").className = "hide";
 		// TODO: highlight(id, ctx, nodes);	
+		draw();
 	}
 	
 	function newnode3(){
@@ -423,7 +425,7 @@ function main() {
 		for (var i = 0; i < nodes.length; i++) {
 			node = nodes[i];
 //			content += "<topic ID=\"" + node.id + "\" x=\"" + node.x + "\" y=\"" + node.y + "\" color=\"" + node.rgb + "\">" + 
-			id = parseInt(node.id) + 1;		// respecting an old bug
+			id = i + 1;		// respecting an old bug
 			content += "<topic ID=\"" + id + "\" x=\"" + node.x + "\" y=\"" + node.y + "\" color=\"" + node.rgb + "\">" + 
 					"<label><![CDATA[" + node.label + "]]></label>";
 			content += "<detail><![CDATA[" + details[i].text + "]]></detail></topic>";
@@ -440,7 +442,8 @@ function main() {
 		uriContent = "data:text/xml," + encodeURIComponent(content);
 		var expAnchor = document.getElementById("export");
 		expAnchor.setAttribute('href', uriContent);
-		expAnchor.setAttribute('download', 'x28export.xml');		}
+		expAnchor.setAttribute('download', 'x28export.xml');
+	}
 
 //
 //	Process the dropped stuff
@@ -693,6 +696,7 @@ function main() {
 				edges.push({n1: n1, n2: n2, rgb: s.rgb});
 				app.saveTopology();
 			}
+			draw();
 		});
 	}
 
