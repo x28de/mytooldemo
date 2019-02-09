@@ -371,6 +371,10 @@ function main() {
 	function newnode2() {
 		id = uuidv4();
 		var newLabel = document.forms[0].elements[0].value;
+		var newDetail = document.forms[0].elements[1].value;
+		if (!newLabel) {
+			newLabel = (channel) ? newDetail.substr(0,15) : "";
+		}
 		rgb = (channel) ? "#ffff66" : "#ccdddd";
 		nodes.push({x: x, y: y, rgb: rgb, label: newLabel, id: id});
 		var newDetail = document.forms[0].elements[1].value;
@@ -653,7 +657,7 @@ function main() {
 			return;
 		}
 		if (wb == "new") {
-			location.search = location.search
+			location.search = (location.search == "new")
 			? '&wb=' + getUniqueId() : 'wb=' + getUniqueId();
 			return;
 		}
@@ -670,16 +674,18 @@ function main() {
 		});
 
 //		subscribe to the changes via Pusher
-		channel = pusher.subscribe(wb);
+		channel = pusher.subscribe('private-' + wb);
 		channel.bind('pusher:subscription_error', function(status) {
-			alert("Subscription failed: " + status);
+			alert("Subscription failed: " + status + ",\n" +
+				"Currently, you need to be logged in to wordpress at " + 
+				location.host + ".\nEmail me or leave a comment to get a guest account.");
 		});
 		channel.bind('pusher:subscription_succeeded', function() {
 			alert("Successfully subscribed.");
 		});
 		
+//		incoming event
 		channel.bind('client-my-event', function(data) {
-			// do something meaningful with the data here
 			var s = JSON.parse(data.publishNode);
 			if (s.type == 'node') {
 				nodes.push({x: s.x, y: s.y, rgb: s.rgb, label: s.label, id: s.id});
@@ -710,7 +716,7 @@ function main() {
 
 	// a unique random key generator
 	function getUniqueId () {
-		return 'private-' + Math.random().toString(36).substr(2, 9);
+		return Math.random().toString(36).substr(2, 9);
 	}
 	
 	function uuidv4() {	// by Stackoverflow user broofa

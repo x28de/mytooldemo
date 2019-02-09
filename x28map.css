@@ -31,6 +31,7 @@ a.opt {
 .fill {
 	margin-left: 765px; margin-bottom: 300px; height: 576px; width: 250px;
 	border: 1px solid; padding: 3px;
+	background-color: #f8f8f8;
 }
 textarea {
 	width: 245px;
