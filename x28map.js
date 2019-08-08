@@ -48,6 +48,12 @@ function main() {
 	var edges;
 	var details;
 		
+	var lineRect;
+	var dirty = false;
+	var xnew;
+	var ynew;
+	var where;
+	
 	new whiteboard();
 	
 //
@@ -123,6 +129,7 @@ function main() {
 				
 	selectedNode = -1,
 	targetNode = -1;
+	selectedEdge = -1;
 				
 	lastX = 0, 
 	lastY = 0, 
@@ -135,6 +142,8 @@ function main() {
 				
 	var fillbutton = document.getElementById("doneButton");
 	fillbutton.addEventListener('click',newnode2);
+//	var fillbutton = document.forms[0];
+//	fillbutton.addEventListener('submit', function(event){newnode2();event.preventDefault()});
 	
 	var colors = ["#d2bbd2", "#bbbbff", "#bbffbb", "#ffff99", 
 		"#ffe8aa", "#ffbbbb", "#eeeeee", "#ccdddd"];
@@ -144,6 +153,10 @@ function main() {
 
 	
 	var publishNode;
+	
+	if (where) {
+		console.log("hash present: " + where);
+	}
 	
 //
 //	Pointer down/ move/ up
@@ -155,13 +168,25 @@ function main() {
 		if (evt.altKey || evt.which == 2) {
 			modified = true;
 		} else modified = false;
+//		if (selectedNode != findClicked(evt)) {
+//			if (dirty) {
+//				document.forms[0].submit();
+//				fillbutton.click();
+//				newnode2();
+//				if (selectedNode != -1) alert("Deselected: " + selectedNode + " -> " + findClicked(evt));
+//			}
+//		}
 		selectedNode = findClicked(evt);
+		selectedEdge = -1;
 		if (selectedNode == -1) {
+		selectedEdge = edgeHit(evt);
+		if (selectedEdge == -1) {
 			document.getElementById("demo").innerHTML = initText;
 			document.getElementById("rmenu").className = "hide";
 			document.getElementById("rmenu2").className = "hide";
 			document.getElementById("help").addEventListener('click', loadHelp);
 			document.getElementById("example").addEventListener('click', loadHelp);
+		}
 		}
 		mousedown = true;
 		draw(evt);
@@ -284,6 +309,7 @@ function main() {
 				ctx.moveTo(nodes[edges[i].n1].x, nodes[edges[i].n1].y); 
 				ctx.lineTo(nodes[edges[i].n2].x, nodes[edges[i].n2].y); 
 				ctx.stroke(); 
+				if (selectedEdge == i) highlightEdge(i, ctx);
 			} 
 		}
 		for (var i = 0; i < nodes.length; i++) { 
@@ -320,6 +346,51 @@ function main() {
 		return node;
 	}
 
+	function edgeHit(evt) {
+		edgeNum = -1;
+		x = evt.pageX - translatedX; 
+		y = evt.pageY - translatedY; 
+		for (var i = 0; i < edges.length; i++) {
+			var edge = edges[i];
+//			if (!edge) alert(i + " is no edge");
+			node1 = nodes[parseInt(edge.n1)];
+			node2 = nodes[parseInt(edge.n2)];
+	        lineRect = lineAsRect(node1.x, node1.y, node2.x, node2.y, 20);
+			if (ctx.isPointInPath(x, y)) {
+				edgeNum = i;
+//				alert (edgeNum + ": " + node1.x + ", " + node1.y + " -> " + node2.x + " , " + node2.y);
+//				selectedEdge = i;
+			}
+		}
+		return edgeNum;
+	}
+	
+    function lineAsRect(x1, y1, x2, y2, lineWidth) {
+    	// inspired by http://jsfiddle.net/m1erickson/QyWDY
+        var dx = x2 - x1; 
+        var dy = y2 - y1; 
+        var lineLength = Math.sqrt(dx * dx + dy * dy);
+        var lineRadianAngle = Math.atan2(dy, dx);
+        ctx.save();
+        ctx.beginPath();
+        ctx.translate(x1, y1);
+        ctx.rotate(lineRadianAngle);
+        ctx.rect(0, -lineWidth / 2, lineLength, lineWidth);
+        ctx.translate(-x1, -y1);
+        ctx.rotate(-lineRadianAngle);
+        ctx.restore();
+        ctx.closePath();
+    }
+
+	function highlightEdge(i, ctx) {
+		edge = edges[selectedEdge];
+		node1 = nodes[parseInt(edge.n1)];
+		node2 = nodes[parseInt(edge.n2)];
+        lineRect = lineAsRect(node1.x, node1.y, node2.x, node2.y, 5);
+		ctx.strokeStyle = "#ff0000";
+		ctx.stroke();
+	}
+
 //
 //	Selected node			
 				
@@ -348,7 +419,7 @@ function main() {
 				
     function rightmenu(e) {
 		e.preventDefault();
-		if (selectedNode == -1) {
+		if (selectedNode == -1 && selectedEdge == -1) {
 		document.getElementById("rmenu").className = "show";  
 		document.getElementById("rmenu").style.top =  e.y + 'px';
 		document.getElementById("rmenu").style.left = e.x + 'px';
@@ -366,18 +437,26 @@ function main() {
 		document.getElementById("demo").className = "hide";
 		document.getElementById("fillDetails").className = "fill";
 		mousedown = false;	// for mac
+		xnew = x;
+		ynew = y;
+		selectedNode = nodes.length;
 	}
     		
 	function newnode2() {
+		x = xnew;
+		y = ynew;
 		id = uuidv4();
 		var newLabel = document.forms[0].elements[0].value;
 		var newDetail = document.forms[0].elements[1].value;
+//		var newDetail = document.getElementById('detail').value;
+//		alert (newDetail);
 		if (!newLabel) {
 			newLabel = (channel) ? newDetail.substr(0,15) : "";
 		}
 		rgb = (channel) ? "#ffff66" : "#ccdddd";
 		nodes.push({x: x, y: y, rgb: rgb, label: newLabel, id: id});
 		var newDetail = document.forms[0].elements[1].value;
+		selectedNode = nodes.length;
 		details.push({text: newDetail});
 		if (channel) {
 			var publishNode = {type: 'node', x: x,	y: y, rgb: rgb, 
@@ -389,12 +468,12 @@ function main() {
 		newnode3();
 		
 		document.getElementById("rmenu").className = "hide";
-		document.forms[0].elements[0].value = "";
-		document.forms[0].elements[1].value = "";
+		document.forms[0].reset();
 		document.getElementById("demo").className = "show";
 		document.getElementById("fillDetails").className = "hide";
 		// TODO: highlight(id, ctx, nodes);	
 		draw();
+		dirty = false;
 	}
 	
 	function newnode3(){
@@ -613,6 +692,7 @@ function main() {
 	
 	function processRequestString() {
 		var what = location.search.substr(1);
+		where = location.hash.substr(1);
 		if (what) {
 			if (what == "wipe") {
 				wipe2();
@@ -664,8 +744,9 @@ function main() {
 		var pusher = new Pusher('4adbc41a101586f6da84', {	// change to your own values
 			cluster: 'eu',
 			forceTLS: true,
-//			authEndpoint: 'http://condensr.de/whiteboard/php/x28auth.php',  
-			authEndpoint: 'http://127.0.0.1/wp/whiteboard/php/x28auth.php',  
+			authEndpoint: 'http://condensr.de/whiteboard/php/x28auth.php',  
+//			authEndpoint: 'http://mmelcher.org/wp/whiteboard/php/x28auth.php',  
+//			authEndpoint: 'http://127.0.0.1/wp/whiteboard/php/x28auth.php',  
 			auth: {
 				headers: {
 					'X-CSRF-Token': "SOME_CSRF_TOKEN"
