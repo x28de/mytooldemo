@@ -52,8 +52,9 @@ function main() {
 	var dirty = false;
 	var xnew;
 	var ynew;
-	var where;
 	
+	var where = location.hash.substr(1);
+	document.getElementById("demo").style = "font-family: Verdana; padding: 5px;"
 	new whiteboard();
 	
 //
@@ -150,13 +151,12 @@ function main() {
 		
 	document.getElementById("help").addEventListener('click', loadHelp);
 	document.getElementById("example").addEventListener('click', loadHelp);
+	document.getElementById("demo").addEventListener('click', pilotHashed);
 
 	
 	var publishNode;
 	
-	if (where) {
-		console.log("hash present: " + where);
-	}
+	if (where) openHashed(where);
 	
 //
 //	Pointer down/ move/ up
@@ -193,6 +193,7 @@ function main() {
     }
     		
 	function move(e){ 
+		if (!mousedown) return;
 		var evt = e || event; 
 		var deltaX = evt.pageX - lastX; 
 		var deltaY = evt.pageY - lastY; 
@@ -345,7 +346,62 @@ function main() {
 		}
 		return node;
 	}
+	
+	function hash2node(hash) {
+		for (var i = 0; i < nodes.length; i++) { 
+			if (nodes[i].label.replace(/ /g, "%20") == hash) { 
+				return i;
+			} 
+		}
+		return -1;
+	}
 
+	function openHashed() { 
+		selectedNode = hash2node(where);
+		var deltaX = 430 - nodes[selectedNode].x; 
+		var deltaY = 290 - nodes[selectedNode].y; 
+		var pos = 0;
+		var id = setInterval(frame, 5);
+
+		function frame() {
+		  if (pos == 100) {
+		    clearInterval(id);
+		  } else {
+			  pos++;
+			  progressX = deltaX / 100;
+			  progressY = deltaY / 100;
+			  translatedX += progressX; 
+			  translatedY += progressY; 
+			  ctx.translate(progressX, progressY); 
+			  draw();
+		  }
+		}
+	}
+	
+	function pilotHashed(evt) {
+		location.assign(evt.target);
+		where2 = location.hash.substr(1);
+		selectedNode = hash2node(where2);
+		var deltaX = 430 - translatedX - nodes[selectedNode].x; 
+		var deltaY = 290 - translatedY - nodes[selectedNode].y; 
+		var pos = 0;
+		var id = setInterval(frame, 5);
+
+		function frame() {
+		  if (pos == 100) {
+		    clearInterval(id);
+		  } else {
+			  pos++;
+			  progressX = deltaX / 100;
+			  progressY = deltaY / 100;
+			  translatedX += progressX; 
+			  translatedY += progressY; 
+			  ctx.translate(progressX, progressY); 
+			  draw();
+		  }
+		}
+	}
+	
 	function edgeHit(evt) {
 		edgeNum = -1;
 		x = evt.pageX - translatedX; 
@@ -596,7 +652,7 @@ function main() {
 				if (xhr.status === 200) {
 					ending = url.substr(url.length - 4, url.length).toLowerCase();
 					if (ending == ".xml") {
-						whereToLoad("clean");
+						if (!where) whereToLoad("clean");
 						loadXml(xhr.responseText);
 					} else {
 						whereToLoad("append");
@@ -692,7 +748,6 @@ function main() {
 	
 	function processRequestString() {
 		var what = location.search.substr(1);
-		where = location.hash.substr(1);
 		if (what) {
 			if (what == "wipe") {
 				wipe2();
@@ -702,7 +757,7 @@ function main() {
 			if (lastWhat == "reload") {
 				localStorage.removeItem("savedURL");
 				return;
-			} else if (lastWhat == what) {
+			} else if (lastWhat == what && !where) {
 				if (!confirm("Really add this once more? \n" + what)) trimURL();
 			}
 			fetchXml(what);
