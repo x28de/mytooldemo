@@ -54,7 +54,8 @@ function main() {
 	var ynew;
 	
 	var where = location.hash.substr(1);
-	document.getElementById("demo").style = "font-family: Verdana; padding: 5px;"
+	document.getElementById("demo").style = "font-family: Verdana; padding: 5px;" +
+			"overflow: scroll;"
 	new whiteboard();
 	
 //
@@ -349,7 +350,9 @@ function main() {
 	
 	function hash2node(hash) {
 		for (var i = 0; i < nodes.length; i++) { 
-			if (nodes[i].label.replace(/ /g, "%20") == hash) { 
+			label = nodes[i].label;
+			if (label == hash || 	// for safari
+					label.replace(/ /g, "%20") == hash) { 
 				return i;
 			} 
 		}
@@ -379,6 +382,7 @@ function main() {
 	}
 	
 	function pilotHashed(evt) {
+		if (!evt.target.href) return;
 		location.assign(evt.target);
 		where2 = location.hash.substr(1);
 		selectedNode = hash2node(where2);
