@@ -157,7 +157,6 @@ function main() {
 	
 	var publishNode;
 	
-	if (where) openHashed(where);
 	
 //
 //	Pointer down/ move/ up
@@ -361,6 +360,7 @@ function main() {
 
 	function openHashed() { 
 		selectedNode = hash2node(where);
+		if (selectedNode <= 0) return;
 		var deltaX = 430 - nodes[selectedNode].x; 
 		var deltaY = 290 - nodes[selectedNode].y; 
 		var pos = 0;
@@ -386,6 +386,7 @@ function main() {
 		location.assign(evt.target);
 		where2 = location.hash.substr(1);
 		selectedNode = hash2node(where2);
+		if (selectedNode <= 0) return;
 		var deltaX = 430 - translatedX - nodes[selectedNode].x; 
 		var deltaY = 290 - translatedY - nodes[selectedNode].y; 
 		var pos = 0;
@@ -656,7 +657,7 @@ function main() {
 				if (xhr.status === 200) {
 					ending = url.substr(url.length - 4, url.length).toLowerCase();
 					if (ending == ".xml") {
-						if (!where) whereToLoad("clean");
+						whereToLoad("clean");
 						loadXml(xhr.responseText);
 					} else {
 						whereToLoad("append");
@@ -747,6 +748,7 @@ function main() {
 		app.savedDetails = details;
 		app.saveTexts();
 
+		if (where) openHashed(where);
 		draw();
 	}		
 	
@@ -761,7 +763,7 @@ function main() {
 			if (lastWhat == "reload") {
 				localStorage.removeItem("savedURL");
 				return;
-			} else if (lastWhat == what && !where) {
+			} else if (lastWhat == what) {
 				if (!confirm("Really add this once more? \n" + what)) trimURL();
 			}
 			fetchXml(what);
