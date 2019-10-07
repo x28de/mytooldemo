@@ -31,7 +31,8 @@ function main() {
 			'	<a id = "color5" class=\'opt\'>Change color</a><br />' + 
 			'	<a id = "color6" class=\'opt\'>Pale</a><br />' + 
 			'	<a id = "color7" class=\'opt\'>Dark</a><br /></div>' + 
-			'<div id="demo"><em>Drag an icon to move it;  <br />click an icon for its details.<br />' + 
+			'<div id="demo"><em>Drag the canvas to pan it;  <br />' + 
+			'<em>drag an icon to move it;  <br />click an icon for its details.<br />' + 
 			'ALT + drag an icon to connect it.<br />&nbsp;<br />&nbsp;<br />' + 
 			'<a id="example" href="#">Play the intro game?</a><br />&nbsp;<br />' + 
 			'<a id="help" href="#">Get help?</a></em> </div>' + 
@@ -161,6 +162,20 @@ function main() {
 //
 //	Pointer down/ move/ up
 				
+	if (window.PointerEvent) { 
+		can.addEventListener('pointerdown', down); 
+		can.addEventListener('pointermove', move); 
+		can.addEventListener('pointerup', up); 
+	} else if (window.TouchEvent) { 
+		can.addEventListener('touchstart', down); 
+		can.addEventListener('touchmove', move); 
+		can.addEventListener('touchend', up); 
+   	} else { 
+		can.addEventListener('mousedown', down); 
+		can.addEventListener('mousemove', move); 
+		can.addEventListener('mouseup', up); 
+	} 
+							    		
 	function down(e) {
 		var evt = e || event; 
 		lastX = evt.pageX; 
@@ -249,20 +264,6 @@ function main() {
 		draw(evt);
 	}  
     		
-	if (window.PointerEvent) { 
-		can.addEventListener('pointerdown', down); 
-		can.addEventListener('pointermove', move); 
-		can.addEventListener('pointerup', up); 
-	} else if (window.TouchEvent) { 
-		can.addEventListener('touchstart', down); 
-		can.addEventListener('touchmove', move); 
-		can.addEventListener('touchend', up); 
-   	} else { 
-		can.addEventListener('mousedown', down); 
-		can.addEventListener('mousemove', move); 
-		can.addEventListener('mouseup', up); 
-	} 
-							    		
 //
 //	Drag in
 
@@ -645,7 +646,7 @@ function main() {
         if (location.host != helpHost) {
         	window.open("http://" + helpHost + "/demo/?" + helpFile);
         } else {
-    		fetchXml(helpFile);
+        	location.assign("http://" + helpHost + "/demo/?" + helpFile);
         }
 	}
 
@@ -657,8 +658,8 @@ function main() {
 				if (xhr.status === 200) {
 					ending = url.substr(url.length - 4, url.length).toLowerCase();
 					if (ending == ".xml") {
-						whereToLoad("clean");
-						loadXml(xhr.responseText);
+						approval = whereToLoad("clean");
+						if (approval) loadXml(xhr.responseText);
 					} else {
 						whereToLoad("append");
 						newStuff(xhr.responseText);
@@ -675,7 +676,7 @@ function main() {
 				if (!confirm("This will wipe clean your map. \n" +
 						"(You may want to export it first,\n" +
 						"via right-click on the canvas.)")) {
-					return;}
+					return false;}
 			}
 			wipe2();
 		} else {
@@ -695,6 +696,7 @@ function main() {
 				y = 40;
 			}
 		}
+		return true;
 	} 
 
 	function loadXml(xml) {
@@ -764,7 +766,10 @@ function main() {
 				localStorage.removeItem("savedURL");
 				return;
 			} else if (lastWhat == what) {
-				if (!confirm("Really add this once more? \n" + what)) trimURL();
+				if (!confirm("Really load this once more? \n" + what)) {
+					trimURL();
+					return;
+				}
 			}
 			fetchXml(what);
 			localStorage.savedURL = what;
