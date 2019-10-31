@@ -672,7 +672,7 @@ function main() {
 	
 	function whereToLoad(type) {
 		if (type == "clean") {
-			if (app.savedNodes.length > 0) {
+			if (location.host != "x28hd.de" && app.savedNodes.length > 0) {
 				if (!confirm("This will wipe clean your map. \n" +
 						"(You may want to export it first,\n" +
 						"via right-click on the canvas.)")) {
