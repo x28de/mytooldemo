@@ -361,7 +361,7 @@ function main() {
 
 	function openHashed() { 
 		selectedNode = hash2node(where);
-		if (selectedNode <= 0) return;
+		if (selectedNode < 0) return;
 		var deltaX = 430 - nodes[selectedNode].x; 
 		var deltaY = 290 - nodes[selectedNode].y; 
 		var pos = 0;
@@ -387,7 +387,7 @@ function main() {
 		location.assign(evt.target);
 		where2 = location.hash.substr(1);
 		selectedNode = hash2node(where2);
-		if (selectedNode <= 0) return;
+		if (selectedNode < 0) return;
 		var deltaX = 430 - translatedX - nodes[selectedNode].x; 
 		var deltaY = 290 - translatedY - nodes[selectedNode].y; 
 		var pos = 0;
