@@ -1,0 +1,40 @@
+@charset "UTF-8"; 
+/* CSS Document */ 
+
+#textPane { 
+	margin-left: 765px; 
+	margin-bottom: 300px; 
+	height: 576px; 
+	width: 250px;
+	border: 1px solid;
+	font-family: Verdana; 
+	font-size: 14px;
+	padding: 5px; 
+	overflow: scroll;"
+} 
+canvas { 
+	display: block; 
+	border: 1px solid #000; 
+	float: left; 
+	touch-action: none; 
+} 
+
+/* temporary testing controls */
+.show {
+    z-index:1000;
+    position: absolute;
+    border: 1px solid black;
+    padding: 2px;
+    display: block;
+    margin: 0;
+	background-color: #f8f8f8;
+}
+a.opt {
+	font-family: sans-serif;
+	text-decoration: none;
+	color: #000000;
+	cursor: pointer;
+}
+.hide {
+    display: none;
+}
