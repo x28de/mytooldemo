@@ -41,7 +41,7 @@ function main() {
 			canvas.title = "Rightclick to wipe clean";
 		} else {
 			nodes = [];
-			canvas.title = "Rightclick to load TSV file";
+			canvas.title = "Rightclick to load JSON file";
 		}
 		if (localStorage.edges) {
 			edges = JSON.parse(localStorage.edges);
@@ -69,12 +69,12 @@ function main() {
 		
 		var rmenu = document.createElement("p");
 		rmenu.innerHTML = '<div class="hide" id="rmenu">' + 
-		'<a id = "load" class=\'opt\'>Load TSV file</a><br />' + 
+		'<a id = "load" class=\'opt\'>Load JSON file</a><br />' + 
 		'<a id = "wipe" class=\'opt\'>Wipe clean</a><br /></div>';
 		root.appendChild(rmenu);
 
 		canvas.addEventListener('contextmenu', rightmenu, false);
-		document.getElementById("load").addEventListener('click', uploadTsv);
+		document.getElementById("load").addEventListener('click', uploadJson);
 		document.getElementById("wipe").addEventListener('click', wipe);
 					
 	}
@@ -188,26 +188,23 @@ function main() {
 
 	
 //
-//	Process the input stuff "tsv"
+//	Process the input stuff "json"
 
-	function newStuff(tsv) {
+	function newStuff(json) {
+		var input = JSON.parse(json);
+		var items = input.data;
+		var concordance = {};
 		var xnew;
 		var ynew;
-		
-		var lines = tsv.split('\n');
 		row = 0;
 		xnew = x;
-		for (var i = 0; i < lines.length; i++) {
-			line = lines[i].trim();
-			var fields = line.split('\t');
-			if (fields.length < 2) {
-				detail = line;
-				label = line.substring(0, 30);
-			} else {
-				label = fields[0];
-				detail = fields[1];
-			}
-			if (!label && !detail) continue; 
+		
+		for (var i = 0; i < items.length; i++) {
+			var item = items[i];
+			var label = item.title.substring(0, 30);
+			var linkString = item.link;
+			var detail = "<a href=\"" + linkString + "\">" + item.title + "</a><p>";
+			detail += item.description;
 			ynew = y + row * 50;
 			if (row > 9) {
 				row = 0;
@@ -216,6 +213,19 @@ function main() {
 			}
 			row++;
 			nodes.push({x: xnew, y: ynew, color: '#ccdddd', label: label, detail: detail});
+			var itemID = items[i]["@id"];
+			concordance[itemID] = i;
+		}
+		
+		var lines = input.graph;
+		for (var i = 0; i < lines.length; i++) {
+			var line = lines[i];
+			var id1 = line.source;
+			var id2 = line.target;
+			var n1 = concordance[id1];
+			var n2 = concordance[id2];
+			var edge = {n1: n1, n2: n2, color: "#c0c0c0"};
+			edges[i] = edge;
 		}
 		draw();
 		save();
@@ -232,7 +242,7 @@ function main() {
 //
 //	Temporary testing controls
 	
-	function uploadTsv() {		// if TSV is not passed otherwise
+	function uploadJson() {		// if JSON is not passed otherwise
 		var input = document.createElement('input');
 		input.type = 'file';
 		input.onchange = e => { 
@@ -240,9 +250,9 @@ function main() {
 			var reader = new FileReader();
 			reader.readAsText(file);
 			reader.onload = function(readerEvent) {
-				var tsv = readerEvent.target.result;
+				var json = readerEvent.target.result;
 				
-				newStuff(tsv);
+				newStuff(json);
 				draw();
 				save();
 			}
@@ -267,7 +277,7 @@ function main() {
 		edges = [];
 		document.getElementById("rmenu").className = "hide";
 		draw();
-		canvas.title = "Rightclick to load TSV file";
+		canvas.title = "Rightclick to load JSON file";
 	};
 	
 }
