@@ -1,0 +1,84 @@
+* {
+	box-sizing: border-box;
+  }
+  body {
+	margin: 0;
+	height: 100vh;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 12px;
+  }
+  canvas {
+	background-color: white;
+  }	
+  .content {
+	width: 100%;
+	height: 100%;
+	display: flex;
+	justify-items: center;
+	align-items: center;
+	overflow: hidden;
+  }
+  .split {
+	width:100%;
+	height:100%;
+	padding: 0px;
+	border: 1px solid;
+  }
+  .a {
+	touch-action: none;
+	background-color: pink;
+  }
+  .b {
+	background-color: lightblue;
+	margin-right: 1px;
+	padding: 0px;
+  }
+  .gutter {
+	cursor: col-resize;
+	height: 100%;
+	background: white;
+  }
+
+ /* Context menu  */
+ .show {
+ 	z-index: 1000;
+ 	position: absolute;
+ 	border: 1px solid #c0c0c0;
+ 	padding: 1px;
+ 	display: block;
+ 	margin: 0;
+ 	background-color: #f8f8f8;
+ 	font-size: 12px;
+ 	width: 90px;
+ }
+
+ /* Choice options */
+ a.opt {
+ 	font-family: sans-serif;
+ 	text-decoration: none;
+ 	padding: 2px;
+ 	line-height: 18px;
+ 	color: #000000;
+ 	cursor: pointer;
+ 	display: grid;
+ }
+
+ /* Reverse for dark colors	 */
+ a.opt2 {
+ 	font-family: sans-serif;
+ 	text-decoration: none;
+ 	padding: 2px;
+ 	line-height: 18px;
+ 	color: #ffffff;
+ 	cursor: pointer;
+ 	display: grid;
+ }
+
+ /* Node and edge menu */
+ .rmenu2 {
+ 	cursor: pointer;
+ }
+
+ .hide {
+ 	display: none;
+ }
