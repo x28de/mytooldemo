@@ -1,4 +1,4 @@
-// Release: 1.0
+// Release: 1.1
 class PresentationCore {
     nodes = new Map();
     edges = new Map();
@@ -318,9 +318,9 @@ class TextEditorCore {
 class GraphCore {
     selection = new Selection();
     // directly from jri:
-    translateInProgress;	// \
-    moveInProgress;			// | max one is set
-    edgeInProgress;			// |
+    translateInProgress = false;	// \
+    moveInProgress = false;			// | max one is set
+    edgeInProgress = false;			// |
 
     translation = [0, 0];
     lastPoint = [0, 0];
@@ -350,7 +350,6 @@ class GraphCore {
             canvas.addEventListener('pointerdown', function (e) { th.thisPanelPressed(e) });
             canvas.addEventListener('pointerup', function (e) { th.thisPanelReleased(e) });
             canvas.addEventListener('pointermove', function (e) { th.thisPanelDragged(e) });
-            canvas.addEventListener('pointerleave', function (e) { th.thisPanelReleased(e) });
         } else if (window.MouseEvent) {
         canvas.addEventListener('mousedown', function (e) { th.thisPanelPressed(e) });
         canvas.addEventListener('mouseup', function (e) { th.thisPanelReleased(e) });
@@ -1099,6 +1098,7 @@ class GraphPanel extends GraphCore {
     rectangleMark = [];
     rectangle = [0, 0, 0, 0];
     dragInProgress = false; // true if dragged before released
+    rectangleMoving = false;
 
     constructor(caller) {
         super(caller);
@@ -1172,7 +1172,7 @@ class GraphPanel extends GraphCore {
     thisPanelDragged(e) {
         // = super + rectangleGrowing + rectangleContains
         if (!this.mousedown) return;
-        if (this.moveInProgress || this.translateInProgress) {
+        if (this.moveInProgress || this.translateInProgress || this.rectangleMoving) {
             // were set in nodeClicked or graphClicked, respectively
             this.dragInProgress = true;
             var x = e.clientX;
@@ -1183,11 +1183,8 @@ class GraphPanel extends GraphCore {
             this.mY = y;
             if (this.moveInProgress) {
                 this.translateNode(this.selection.topic, dx, dy);
-            } else if (this.rectangleInProgress &&
-                    this.rectangleContains(this.rectangle, [
-                        e.clientX - this.translation[0],
-                        e.clientY - this.translation[1]])) { 
-                    this.translateRectangle(dx, dy);
+            } else if (this.rectangleMoving) {
+                this.translateRectangle(dx, dy);
             } else {
                 this.translateGraph(dx, dy);
             }
@@ -1219,18 +1216,20 @@ class GraphPanel extends GraphCore {
             this.rectangleInProgress = true;
             this.nodeRectangle(true);
             this.draw();
-        } else if (this.rectangleInProgress && !this.dragInProgress &&
-            this.rectangleContains(this.rectangle, [
-                e.clientX - this.translation[0],
-                e.clientY - this.translation[1]])) {
-            this.ignoreDoubleclick = true; 
-            this.rectangleInProgress = false;
-            this.nodeRectangle(false);
+        } else if (this.rectangleInProgress && !this.dragInProgress) {
             this.rectangle = [0, 0, 0, 0];
             this.nodeRectangle(false);
             this.draw();
         }
+        if (this.rectangleMoving) {
+            this.rectangleMoving = false;
+            this.draw();
+        }
         this.dragInProgress = false;
+    }
+
+    thisPanelLeft(e) {
+        super.thisPanelReleased(e);     // extended method worked oddly on touch device
     }
 
     graphClicked(e) {
@@ -1239,6 +1238,14 @@ class GraphPanel extends GraphCore {
         } else this.modified = false;
 
         super.graphClicked(e);
+        if (this.rectangleInProgress &&
+            this.rectangleContains(this.rectangle, [
+                e.clientX - this.translation[0],
+                e.clientY - this.translation[1]])) {
+            this.rectangleMoving = true;
+            this.translateInProgress = false;
+        }
+
         var x = e.clientX;
         var y = e.clientY;
         if (this.modified) {
@@ -1291,7 +1298,8 @@ class GraphPanel extends GraphCore {
         canvas.addEventListener('dragover', function (e) { th.canImport(e) });
         canvas.addEventListener('drop', function (e) { th.importData(e) });
         canvas.addEventListener('contextmenu', function (e) { th.rightmenu(e) });
-        canvas.addEventListener('dblclick', function (e) { th.thisPanelDoubleclicked(e) });
+        canvas.addEventListener('dblclick', function (e) { console.log("dbl"); th.thisPanelDoubleclicked(e) });
+        canvas.addEventListener('pointerleave', function (e) { th.thisPanelLeft(e) });
     }
 
     rightmenu(e) {
