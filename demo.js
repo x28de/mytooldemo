@@ -1,4 +1,4 @@
-// Release: 1.1
+// Release: 1.2
 class PresentationCore {
     nodes = new Map();
     edges = new Map();
@@ -1009,7 +1009,7 @@ class PresentationService extends PresentationCore {
         this.nodes = integrateNodes.getNodes();
         this.edges = integrateNodes.getEdges();
         this.graphClass.setModel(this.nodes, this.edges);
-        this.graphClass.graphSelected();
+        this.graphClass.draw();
         if (this.openHash) this.findHash(document.location.hash.substring(1));
     }
 
@@ -1478,8 +1478,9 @@ class TopicMapStorer {
         var expAnchor = document.getElementById("store");
         expAnchor.setAttribute('href', uriContent);
         var date = new Date();
-        filename += "-" + date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate() + "-" +
-            date.getHours() + "-" + date.getMinutes() + "-" + date.getSeconds();
+        var parts = [date.getFullYear(), date.getMonth() + 1, date.getDate(), 
+            date.getHours(), date.getMinutes(), date.getSeconds()];
+        for (var p = 0; p < 6; p++) filename += "-" + (parts[p] + "").padStart(2, "0");
         filename += ".xml";
         expAnchor.setAttribute('download', filename);
     }
@@ -1488,8 +1489,8 @@ class TopicMapStorer {
         this.nodes.forEach(node => {
             var topic = this.doc.createElement("topic");
             topic.setAttribute("ID", node.getID());
-            topic.setAttribute("x", node.getXY()[0]);
-            topic.setAttribute("y", node.getXY()[1]);
+            topic.setAttribute("x", node.getXY()[0].toFixed());
+            topic.setAttribute("y", node.getXY()[1].toFixed());
             topic.setAttribute("color", node.getColor());
             var label = this.doc.createElement("label");
             var labelData = this.doc.createCDATASection(node.getLabel());
