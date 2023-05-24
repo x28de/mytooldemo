@@ -1,4 +1,4 @@
-// Release: 1.2
+// Release: 1.3
 class PresentationCore {
     nodes = new Map();
     edges = new Map();
@@ -887,7 +887,8 @@ class PresentationService extends PresentationCore {
             + "<a href=\"mailto:support@x28hd.de\">support@x28hd.de</a></em></font></p>"
             var initText3 = "<p style=\"margin-top: 0\"><font color=\"gray\">"
 			+ "<em>Click an icon for its details, <br />"
-            + 'drag an icon to move it; <br />'
+            + 'drag an icon to move it, <br />'
+            + 'drag the canvas to pan it; <br />'
             + '<br />&nbsp;<br />'
             + '<a href="?example-en.xml" target="_blank">Play the intro game?</a><br />'
             + '<br /><a href="?help-en.xml" target="_blank">Get help?</a></em></font></p>';
@@ -1009,6 +1010,7 @@ class PresentationService extends PresentationCore {
         this.nodes = integrateNodes.getNodes();
         this.edges = integrateNodes.getEdges();
         this.graphClass.setModel(this.nodes, this.edges);
+        this.graphSelected();
         this.graphClass.draw();
         if (this.openHash) this.findHash(document.location.hash.substring(1));
     }
