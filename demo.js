@@ -30,6 +30,7 @@ class PresentationCore {
     createMainGUI() {
         var nav = navigator.userAgent;
         var weirdBrowser = nav.indexOf("Firefox") < 1 && nav.indexOf("Chrome") < 1 && nav.indexOf("Edg") < 1;
+        if (window.innerWidth < 600) weirdBrowser = true;
 
         // Simulating JSplitPane
         if (typeof (Split) != "undefined" && !weirdBrowser) 
@@ -220,7 +221,11 @@ class TextEditorCore {
             this.fallback = true;
             document.getElementById("detailField").addEventListener(
                 'click', function(e) { if (!e.target.href) return;
-                    location.assign(e.target.href); 
+                    if (e.target.hasAttribute("target")) {
+                        window.open(e.target.href);
+                    } else {
+                        location.assign(e.target.href);
+                    } 
                     th.controler.findHash(location.hash.substring(1)); });
 
             var editButton = document.createElement("button");
@@ -378,7 +383,7 @@ class GraphCore {
             context.fillStyle = color;
             var x = node.getXY()[0];
             var y = node.getXY()[1];
-            context.fillRect(x - 10, y - 8, 20, 16);
+            this.paintNode(context, x, y);
             var label = node.getLabel();
             context.fillStyle = "#000000";
             context.fillText(label, x - 9, y + 23);
@@ -387,6 +392,9 @@ class GraphCore {
                 context.strokeRect(x - 11, y - 11, 22, 22);
             }
         });
+    }
+    paintNode(context, x, y) {
+        context.fillRect(x - 10, y - 8, 20, 16);
     }
 
     paintEdges() {
@@ -639,7 +647,7 @@ class GraphCore {
         var y2 = edge.getNode2().getXY()[1];
         this.lineAsRect(x1, y1, x2, y2, 5, ctx);
         ctx.strokeStyle = "#ff0000";
-        ctx.lineWidth = 1;
+        ctx.lineWidth = 2;
         ctx.stroke();
     }
 
@@ -769,6 +777,7 @@ class PresentationService extends PresentationCore {
         if (queryString) {
             new IngestXML(queryString.substring(1), 3, this);
         }
+        this.insertLocation = [0, 0];
     }
 
     createContextMenu() {
@@ -805,11 +814,26 @@ class PresentationService extends PresentationCore {
         help.className = "opt";
         help.innerHTML = "Help";
         help.target = "_blank";
-        help.href = "?help-en.xml";
+        help.href = "https://demo.condensr.de/?help-en.xml";
         document.getElementById("rmenu").appendChild(help);
         document.getElementById("help").addEventListener('click',
             function () { document.getElementById("rmenu").className = "hide"; });
 
+        var horizontal = document.createElement("a");
+        horizontal.id = "horizontal";
+        horizontal.className = "hide";
+        horizontal.innerHTML = "Flip horizontal";
+        horizontal.title = "Flip the rectangle selection";
+        document.getElementById("rmenu").appendChild(horizontal);
+        document.getElementById("horizontal").addEventListener('click', function () { th.flipRectangle(true) });
+
+        var vertical = document.createElement("a");
+        vertical.id = "vertical";
+        vertical.className = "hide";
+        vertical.innerHTML = "Flip vertical";
+        document.getElementById("rmenu").appendChild(vertical);
+        document.getElementById("vertical").addEventListener('click', function () { th.flipRectangle(false) });
+      
         // Nodes and Edges menu
         var rmenu2 = document.getElementById("rmenu2");
         rmenu2.id = "rmenu2";
@@ -890,8 +914,8 @@ class PresentationService extends PresentationCore {
             + 'drag an icon to move it, <br />'
             + 'drag the canvas to pan it; <br />'
             + '<br />&nbsp;<br />'
-            + '<a href="?example-en.xml" target="_blank">Play the intro game?</a><br />'
-            + '<br /><a href="?help-en.xml" target="_blank">Get help?</a></em></font></p>';
+            + '<a href="https://demo.condensr.de/?example-en.xml" target="_blank">Play the intro game?</a><br />'
+            + '<br /><a href="https://demo.condensr.de/?help-en.xml" target="_blank">Get help?</a></em></font></p>';
         var initText = this.nodes.size == 0 ? initText1 : initText2;
         if (this.readOnly) {
             document.getElementById("detailField").innerHTML = initText3;
@@ -1093,6 +1117,42 @@ class PresentationService extends PresentationCore {
         }
         input.click();
     }
+
+    flipRectangle(horizontal) {
+        document.getElementById("rmenu").className = "hide";
+        var todoList = new Set();
+        var min = Infinity;
+        var max = -Infinity;
+        var z;
+        this.graphClass.rectangleSet.forEach(node => {
+            var xy = node.getXY();
+            if (horizontal) {
+                z = xy[0];
+            } else {
+                z = xy[1];
+            }
+            if (z < min) min = z;
+            if (z > max) max = z;
+            var key = node.getID();
+            todoList.add(key);
+        })
+        var mid = (max + min)/ 2;
+        mid = mid.toFixed();
+        todoList.forEach(key => {
+            var node = this.nodes.get(key);
+            var xy = node.getXY();
+            var x = xy[0];
+            var y = xy[1];
+            if (horizontal) {
+                x = x + 2*(mid - x);
+            } else { 
+                y = y + 2*(mid - y);
+            }
+            node.setXY([x, y]);
+        })
+        this.graphClass.draw();
+    }
+
 }
 
 class GraphPanel extends GraphCore {
@@ -1114,12 +1174,21 @@ class GraphPanel extends GraphCore {
         this.rectangleGrowing = false;
     }
 
-    // Extensions of GraphCore methods to support selection rectangles; 
+    // Extensions of GraphCore methods to support selection rectangles; plus icon shapes
 
     paintNodes() {
-        super.paintNodes();
+        super.paintNodes();         // calls paintNode 
         if (this.rectangleGrowing) this.paintRect();
         if (this.rectangleInProgress) this.paintRect();
+    }
+    paintNode(context, x, y) {      // super would be with indexCard icon shape
+        if (this.nodes.size > this.edges.size) {
+            super.paintNode(context, x, y);
+        } else {
+                context.beginPath();
+                context.arc(x, y, 9, 0, 2 * Math.PI);
+                context.fill();
+        }
     }
 
     paintRect() {
@@ -1207,6 +1276,15 @@ class GraphPanel extends GraphCore {
             this.ey = e.clientY - this.translation[1];
             this.rectangle = [0, 0, 0, 0];	// grows in paintRect
         }
+        if (this.rectangleInProgress 
+            && this.selection.mode != Selection.SELECTED_TOPICMAP) { //    drag node/ edge outside rectangle ?
+            var x = e.clientX - this.translation[0];
+            var y = e.clientY - this.translation[1];
+            if (!this.rectangleContains(this.rectangle, [x, y])) {
+                this.rectangleInProgress = false;
+                this.nodeRectangle(false);
+            }
+        }
         this.draw();
     }
 
@@ -1218,11 +1296,10 @@ class GraphPanel extends GraphCore {
             this.rectangleInProgress = true;
             this.nodeRectangle(true);
             this.draw();
-        } else if (this.rectangleInProgress && !this.dragInProgress) {
-            this.rectangle = [0, 0, 0, 0];
-            this.nodeRectangle(false);
-            this.draw();
+        // } else if (this.rectangleInProgress && !this.dragInProgress) {
+        // giving up on single click to close rectangle; enabling right menu inside.
         }
+
         if (this.rectangleMoving) {
             this.rectangleMoving = false;
             this.draw();
@@ -1265,6 +1342,8 @@ class GraphPanel extends GraphCore {
         }
     
     nodeRectangle(on) {
+        document.getElementById("horizontal").className = on ? "opt" : "hide";
+        document.getElementById("vertical").className = on ? "opt" : "hide";
         this.rectangleSet.clear();
         this.rectangleInProgress = on;
         if (!on) return;
