@@ -1,4 +1,4 @@
-// Release: 1.3
+// Release: 1.4
 class PresentationCore {
     nodes = new Map();
     edges = new Map();
@@ -764,6 +764,9 @@ class PresentationService extends PresentationCore {
         var queryString = document.location.search;
         if (queryString.substring(1,4) == "wb=") queryString = null;
         if (queryString) {this.readOnly = true;}
+
+        this.game = (typeof (Disentangle) != "undefined");
+        if (this.game) this.readOnly = true;
         this.openHash = document.location.hash ? true : false;
 
         super.initialize(this.readOnly);
@@ -777,6 +780,7 @@ class PresentationService extends PresentationCore {
         if (queryString) {
             new IngestXML(queryString.substring(1), 3, this);
         }
+        if (this.game) this.startDisentangle(3);
         this.insertLocation = [0, 0];
     }
 
@@ -916,8 +920,15 @@ class PresentationService extends PresentationCore {
             + '<br />&nbsp;<br />'
             + '<a href="https://demo.condensr.de/?example-en.xml" target="_blank">Play the intro game?</a><br />'
             + '<br /><a href="https://demo.condensr.de/?help-en.xml" target="_blank">Get help?</a></em></font></p>';
+            var initText4 = "<p style=\"margin-top: 0\"><font color=\"gray\">"
+            + '<em>Drag an icon to move it, <br />'
+            + 'drag the canvas to pan it; <br />'
+            + '<br />&nbsp;<br />'
+            + '<a href="https://demo.condensr.de/" target="_blank">Fill your own map?</a></em></font></p>';
         var initText = this.nodes.size == 0 ? initText1 : initText2;
-        if (this.readOnly) {
+        if (this.game) {
+            document.getElementById("detailField").innerHTML = initText4;
+        } else if (this.readOnly) {
             document.getElementById("detailField").innerHTML = initText3;
         } else if (typeof (tinyMCE) != "undefined") {
             document.getElementById("detailField").innerHTML = initText;
@@ -1116,6 +1127,11 @@ class PresentationService extends PresentationCore {
             }
         }
         input.click();
+    }
+    startDisentangle(level) {
+        this.nodes.clear();     // remove level 3 sample
+        this.edges.clear();
+        new Disentangle(this, level);
     }
 
     flipRectangle(horizontal) {
@@ -2061,6 +2077,7 @@ class PresentationWhiteboard extends PresentationService {
 function saveWarning() {
   return "warning";
 }
+
 
 new PresentationService(GraphPanel).initialize();   // the typical variant
 // new PresentationWhiteboard(GraphPanel).initialize();
