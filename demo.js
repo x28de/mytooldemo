@@ -1,4 +1,4 @@
-// Release: 1.4
+// Release: 1.5
 class PresentationCore {
     nodes = new Map();
     edges = new Map();
@@ -1392,6 +1392,7 @@ class GraphPanel extends GraphCore {
         this.newStuff = this.controler.getNSInstance();
         var th = this;
         var canvas = document.getElementById("myCanvas");
+        canvas.addEventListener('dragstart', function (e) { e.preventDefault(); });
         canvas.addEventListener('dragover', function (e) { th.canImport(e) });
         canvas.addEventListener('drop', function (e) { th.importData(e) });
         canvas.addEventListener('contextmenu', function (e) { th.rightmenu(e) });
