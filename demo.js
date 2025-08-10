@@ -30,7 +30,7 @@ class PresentationCore {
     createMainGUI() {
         var nav = navigator.userAgent;
         var weirdBrowser = nav.indexOf("Firefox") < 1 && nav.indexOf("Chrome") < 1 && nav.indexOf("Edg") < 1;
-        if (window.innerWidth < 600) weirdBrowser = true;
+        if (window.innerWidth < 600 && typeof (Disentangle) != "undefined") weirdBrowser = true;
 
         // Simulating JSplitPane
         if (typeof (Split) != "undefined" && !weirdBrowser) 
