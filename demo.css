@@ -8,7 +8,8 @@
 	font-size: 12px;
   }
   canvas {
-	background-color: white;
+	color-scheme: light dark;
+	background-color: light-dark(#ffffff, #000000);
   }	
   .content {
 	width: 100%;

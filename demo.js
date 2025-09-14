@@ -1,4 +1,4 @@
-// Release: 1.5
+// Release: 1.6
 class PresentationCore {
     nodes = new Map();
     edges = new Map();
@@ -248,6 +248,38 @@ class TextEditorCore {
             this.fallback = true;
             return;
         }
+
+        if (window.matchMedia("(prefers-color-scheme: dark)").matches) {     // very ugly, suggestions welcome
+        tinyMCE.init({
+            selector: '#detailField',
+            skin: "oxide-dark",
+            content_css: "dark",
+            height: detailFieldHeight,
+            content_style: 'body { margin: 0px 5px 0px 5px; font-size: 16px; font-family: Serif; line-height: 1.2;}',
+            menubar: false,
+            toolbar: 'bold italic underline | more | myCustomToolbarButton ',
+            toolbar_groups: {
+                more: {
+                  icon: 'more-drawer',
+                  tooltip: 'more',
+                  items: 'undo redo cut copy paste link'
+                }
+              },
+            plugins: 'link',
+            setup: (editor) => {
+                editor.ui.registry.addButton('myCustomToolbarButton', {
+                    text: 'B+',
+                    tooltip: 'Bold and special action',
+                    // onAction: () => alert('Button clicked!')
+                    onAction: () => this.boldSpecialAction()
+                });
+                editor.on('init', function (e) {
+                    getPromiseFromEvent();
+                });
+            },
+            toolbar_location: 'bottom'
+        });
+        } else {
         tinyMCE.init({
             selector: '#detailField',
             height: detailFieldHeight,
@@ -275,6 +307,7 @@ class TextEditorCore {
             },
             toolbar_location: 'bottom'
         });
+    }
 
         waitForInit().then(() => {
             console.log("TinyMCE init done");
@@ -385,7 +418,7 @@ class GraphCore {
             var y = node.getXY()[1];
             this.paintNode(context, x, y);
             var label = node.getLabel();
-            context.fillStyle = "#000000";
+            context.fillStyle = (window.matchMedia("(prefers-color-scheme: dark)").matches) ? "#ffffff" : "#000000";
             context.fillText(label, x - 9, y + 23);
             if (node == this.selection.topic && this.selection.mode == Selection.SELECTED_TOPIC) {
                 context.strokeStyle = "#ff0000";
@@ -410,9 +443,10 @@ class GraphCore {
         });
 
         if (this.edgeInProgress) {      // paint ray of growing edge
+            var ccol = window.matchMedia("(prefers-color-scheme: dark)").matches ? "#ffffff" : "#000000";
             var p = this.selection.topic.getXY();
             document.getElementById("myCanvas").style.cursor = "crosshair";
-            this.paintLine(p, [this.ex - this.translation[0], this.ey - this.translation[1]], "#000000");
+            this.paintLine(p, [this.ex - this.translation[0], this.ey - this.translation[1]], ccol);
         }
     }
 
@@ -782,6 +816,17 @@ class PresentationService extends PresentationCore {
         }
         if (this.game) this.startDisentangle(3);
         this.insertLocation = [0, 0];
+    }
+
+    createMainGUI() {
+        var darkMode = window.matchMedia("(prefers-color-scheme: dark)").matches;
+        super.createMainGUI();
+        var labelField = document.getElementById("labelField");
+        labelField.style.backgroundColor = darkMode ? "#222f3e" : "#ffffff";
+        labelField.style.color = darkMode ? "#ffffff" : "#222f3e";
+        var detailField = document.getElementById("detailField");
+        detailField.style.backgroundColor = darkMode ? "#222f3e" : "#ffffff";
+        detailField.style.color = darkMode ? "#ffffff" : "#222f3e";
     }
 
     createContextMenu() {
