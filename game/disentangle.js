@@ -88,7 +88,7 @@ class Disentangle {
 				if (otherID == i) continue;
 				var otherNode = this.nodes.get(otherID);
                 edgesNum = edgesNum.toFixed();
-				var edge = new GraphEdge(edgesNum, node, otherNode, "#c0c0c0", "x");
+				var edge = new GraphEdge(edgesNum, node, otherNode, "#c0c0c0", "");
 				this.edges.set(edgesNum, edge);
                 node.addEdge(edge);
                 otherNode.addEdge(edge);

@@ -1,4 +1,4 @@
-// Release: 1.5
+// Release: 1.6
 class PresentationCore {
     nodes = new Map();
     edges = new Map();
@@ -1644,7 +1644,6 @@ class SplitIntoNew {
                 }
             }
             if (label.length <= 0 && detail.length <= 0) {
-                j++;        // leave space
             } else {
                 var x = 40 + parseInt(j / maxVert) * 150;
                 var y = 40 + (j % maxVert) * 50 + parseInt(j / maxVert) * 5;
