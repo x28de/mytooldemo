@@ -226,7 +226,7 @@ class TextEditorCore {
                     } else {
                         location.assign(e.target.href);
                     } 
-                    th.controler.findHash(location.hash.substring(1)); });
+                    th.controler.findHash(decodeURIComponent(location.hash.substring(1))); });
 
             var editButton = document.createElement("button");
             editButton.innerHTML = "<a href=\"#\"><em>Edit</em></a>";
